@@ -12,15 +12,10 @@ use Doctrine\ORM\EntityManagerInterface;
 class UserController extends AbstractController
 {
     #[Route('/users', name: 'user_list')]
-    public function list(UserRepository $userRepository): Response
+    public function list(): Response
     {
-        $this->denyAccessUnlessGranted('ROLE_ADMIN');
-        
-        $users = $userRepository->findAll(); 
-
-        return $this->render('user/list.html.twig', [
-            'users' => $users,
-        ]);
+        // Rediriger vers le nouveau contrôleur Admin
+        return $this->redirectToRoute('admin_users');
     }
 
     #[Route('/users/{id}', name: 'user_show', requirements: ['id' => '\d+'])]
@@ -43,7 +38,7 @@ class UserController extends AbstractController
         $entityManager->flush(); 
 
         $this->addFlash('success', "L'utilisateur a été accepté avec succès.");
-        return $this->redirectToRoute('user_list');
+        return $this->redirectToRoute('admin_users');
     }
 
     #[Route('/admin/users/{id}/reject', name: 'user_reject', requirements: ['id' => '\d+'])]
@@ -57,7 +52,7 @@ class UserController extends AbstractController
         $entityManager->flush(); 
     
         $this->addFlash('info', "L'utilisateur a été refusé et rétrogradé au rôle de visiteur.");
-        return $this->redirectToRoute('user_list');
+        return $this->redirectToRoute('admin_users');
     }
 
     #[Route('/admin/users/{id}/deactivate', name: 'user_deactivate', requirements: ['id' => '\d+'])]
@@ -69,7 +64,7 @@ class UserController extends AbstractController
         $entityManager->flush(); 
 
         $this->addFlash('warning', "L'utilisateur a été désactivé.");
-        return $this->redirectToRoute('user_list');
+        return $this->redirectToRoute('admin_users');
     }
 
     #[Route('/admin/users/{id}/activate', name: 'user_activate', requirements: ['id' => '\d+'])]
@@ -81,7 +76,7 @@ class UserController extends AbstractController
         $entityManager->flush(); 
 
         $this->addFlash('success', "L'utilisateur a été réactivé.");
-        return $this->redirectToRoute('user_list');
+        return $this->redirectToRoute('admin_users');
     }
 
     #[Route('/profil', name: 'user_profil')]

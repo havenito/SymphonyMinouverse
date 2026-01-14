@@ -2,121 +2,531 @@
 
 {% block stylesheets %}
     {{ parent() }}
-    <link rel="stylesheet" href="{{ asset('bootstrap/css/main.css') }}">
+    <style>
+        /* Hero Section Épuré et Élégant */
+        .modern-hero {
+            position: relative;
+            border-radius: 30px;
+            padding: 6rem 3rem;
+            margin-bottom: 4rem;
+            overflow: hidden;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            box-shadow: 0 20px 60px rgba(102, 126, 234, 0.25);
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            color: white;
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .hero-title {
+            font-size: 4rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            line-height: 1.2;
+        }
+        
+        .hero-subtitle {
+            font-size: 1.3rem;
+            margin-bottom: 2.5rem;
+            opacity: 0.95;
+            line-height: 1.6;
+        }
+        
+        .hero-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .hero-btn {
+            padding: 1rem 2.5rem;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.05rem;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .hero-btn-primary {
+            background: white;
+            color: #667eea;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .hero-btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            color: #667eea;
+        }
+        
+        .hero-btn-secondary {
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .hero-btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.25);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: translateY(-3px);
+            color: white;
+        }
+        
+        /* Stats Section */
+        .stats-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0 4rem 0;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(102, 126, 234, 0.1);
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.2);
+        }
+        
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 1rem;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+        }
+        
+        .stat-icon-purple {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .stat-icon-orange {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+        
+        .stat-icon-blue {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            color: #64748b;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+        
+        /* Section Headers */
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.75rem;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        
+        .section-subtitle {
+            color: #64748b;
+            font-size: 1.1rem;
+        }
+        
+        /* Modern Article Cards */
+        .article-card-modern {
+            background: white;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+            transition: all 0.4s ease;
+            border: 1px solid rgba(102, 126, 234, 0.1);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .article-card-modern:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(102, 126, 234, 0.25);
+        }
+        
+        .article-image-wrapper {
+            height: 220px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .article-image-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+        
+        .article-card-modern:hover .article-image-wrapper img {
+            transform: scale(1.1);
+        }
+        
+        .article-image-overlay {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            padding: 0.5rem 1rem;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: #667eea;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .article-placeholder {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 3rem;
+        }
+        
+        .article-body {
+            padding: 1.75rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .article-title {
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 0.75rem;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            line-height: 1.4;
+        }
+        
+        .article-excerpt {
+            color: #64748b;
+            line-height: 1.7;
+            margin-bottom: 1.25rem;
+            flex-grow: 1;
+        }
+        
+        .article-meta {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #f1f5f9;
+            margin-bottom: 1.25rem;
+            font-size: 0.9rem;
+        }
+        
+        .article-date {
+            color: #94a3b8;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .article-category-badge {
+            padding: 0.4rem 1rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+        
+        .article-read-btn {
+            padding: 0.875rem 1.5rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 50px;
+            font-weight: 700;
+            text-decoration: none;
+            text-align: center;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        
+        .article-read-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.35);
+            color: white;
+        }
+        
+        /* Category Cards */
+        .category-card-modern {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+            transition: all 0.4s ease;
+            border: 1px solid rgba(102, 126, 234, 0.1);
+            height: 100%;
+        }
+        
+        .category-card-modern:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.2);
+        }
+        
+        .category-icon-box {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 1.5rem;
+            border-radius: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            color: white;
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        .category-name {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 0.75rem;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        
+        .category-description {
+            color: #64748b;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+        
+        .category-explore-btn {
+            padding: 0.75rem 1.75rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 50px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .category-explore-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.35);
+            color: white;
+        }
+        
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .fade-in-up {
+            animation: fadeInUp 0.8s ease;
+        }
+        
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.2rem;
+            }
+            
+            .hero-buttons {
+                flex-direction: column;
+            }
+            
+            .modern-hero {
+                padding: 3rem 2rem;
+            }
+        }
+    </style>
 {% endblock %}
 
-{% block title %}Accueil - Mon Blog Moderne{% endblock %}
+{% block title %}{{ 'nav.home'|trans }} - Minouverse{% endblock %}
 
 {% block body %}
 <div class="container my-5">
 
-    <!-- Hero Section -->
-    <section class="hero-section rounded shadow-sm">
-        <div id="heroCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel">
-            <!-- Indicateurs du carrousel -->
-            <div class="carousel-indicators">
-                <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-                <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
-                <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+    <!-- Modern Hero Section -->
+    <section class="modern-hero">
+        <div class="hero-content">
+            <h1 class="hero-title">{{ 'home.hero.title'|trans }}</h1>
+            <p class="hero-subtitle">
+                {{ 'home.hero.subtitle'|trans }}
+            </p>
+            
+            <div class="hero-buttons">
+                <a href="{{ path('post_list') }}" class="hero-btn hero-btn-primary">
+                    <i class="bi bi-newspaper"></i>
+                    {{ 'home.hero.explore_articles'|trans }}
+                </a>
+                <a href="{{ path('category_list') }}" class="hero-btn hero-btn-secondary">
+                    <i class="bi bi-tags-fill"></i>
+                    {{ 'home.hero.view_categories'|trans }}
+                </a>
             </div>
-
-            <!--Carrousel -->
-            <div class="carousel-inner">
-                <div class="carousel-item active">
-                    <img src="{{ asset('images/chat.jpg') }}" class="d-block w-100" alt="Image Hero 1">
-                    <div class="carousel-caption d-flex flex-column justify-content-center">
-                        <h1 class="display-3 fw-bold">Bienvenue sur Minouverse !</h1>
-                        <p class="lead">Découvrez des articles passionnants et enrichissants.</p>
-                        <a href="{{ path('category_list') }}" class="btn btn-primary btn-lg mt-3 hover-illuminate">Explorer les Catégories</a>
-                    </div>
-                </div>
-                <div class="carousel-item">
-                    <img src="{{ asset('images/chat2.jpg') }}" class="d-block w-100" alt="Image Hero 2">
-                    <div class="carousel-caption d-flex flex-column justify-content-center">
-                        <h1 class="display-3 fw-bold">Explorez nos Catégories</h1>
-                        <p class="lead">Des sujets variés et inspirants pour tous les goûts.</p>
-                        <a href="{{ path('post_list') }}" class="btn btn-primary btn-lg mt-3 hover-illuminate">Voir les Articles</a>
-                    </div>
-                </div>
-                <div class="carousel-item">
-                    <img src="{{ asset('images/chat3.jpg') }}" class="d-block w-100" alt="Image Hero 3">
-                    <div class="carousel-caption d-flex flex-column justify-content-center">
-                        <h1 class="display-3 fw-bold">Rejoignez Notre Communauté</h1>
-                        <p class="lead">Partagez et échangez autour de vos passions.</p>
-                        <a href="{{ path('app_register') }}" class="btn btn-primary btn-lg mt-3 hover-illuminate">S'inscrire</a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Contrôles -->
-            <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
-                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Précédent</span>
-            </button>
-            <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
-                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Suivant</span>
-            </button>
         </div>
     </section>
 
-<!--Articles Récents -->
-<section class="my-5">
-    <h2 class="text-center fw-bold mb-4 animate-fade-in">Articles Récents</h2>
-    <div class="row g-4">
-        {% if posts is not empty %}
-            {% for post in posts %}
-                <div class="col-md-6 col-lg-4">
-                    <div class="card shadow-lg rounded-3 h-100 transition-shadow">
-                        {% if post.picture %}
-                            <img src="{{ asset('uploads/posts/' ~ post.picture) }}" 
-                                 class="card-img-top rounded-top" 
-                                 alt="{{ post.title }}" 
-                                 style="max-height: 200px; object-fit: cover;">
-                        {% else %}
-                            <p class="text-center text-muted py-5">Pas d'image disponible</p>
-                        {% endif %}
-                        <div class="card-body d-flex flex-column">
-                            <h5 class="card-title fw-bold">{{ post.title }}</h5>
-                            <p class="card-text text-muted">{{ post.content|slice(0, 100) }}...</p>
-                            
-                            <!-- Afficher la catégorie + date -->
-                            <p class="text-muted small mt-2">
-                                Catégorie : <strong>{{ post.category.name }}</strong> | 
-                                Date : <em>{{ post.publishedAt|date('d F Y') }}</em>
-                            </p>
+    <!-- Stats Section -->
+    <div class="stats-section fade-in-up">
+        <div class="stat-card">
+            <div class="stat-icon stat-icon-purple">
+                <i class="bi bi-newspaper"></i>
+            </div>
+            <div class="stat-number">{{ posts|length }}</div>
+            <div class="stat-label">{{ 'home.stats.articles_published'|trans }}</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon stat-icon-orange">
+                <i class="bi bi-tags-fill"></i>
+            </div>
+            <div class="stat-number">{{ categories|length }}</div>
+            <div class="stat-label">{{ 'home.stats.categories'|trans }}</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon stat-icon-blue">
+                <i class="bi bi-people-fill"></i>
+            </div>
+            <div class="stat-number">+500</div>
+            <div class="stat-label">{{ 'home.stats.active_members'|trans }}</div>
+        </div>
+    </div>
 
-                            <div class="mt-auto">
-                                <a href="{{ path('post_show', {id: post.id}) }}" class="btn btn-outline-primary w-100 hover-subtle">
-                                    Lire la suite
+    <!-- Articles Récents -->
+    <section class="my-5">
+        <div class="section-header fade-in-up">
+            <h2 class="section-title">{{ 'home.recent_articles.title'|trans }}</h2>
+            <p class="section-subtitle">{{ 'home.recent_articles.subtitle'|trans }}</p>
+        </div>
+        
+        <div class="row g-4">
+            {% if posts is not empty %}
+                {% for post in posts %}
+                    <div class="col-md-6 col-lg-4 fade-in-up" style="animation-delay: {{ loop.index * 0.1 }}s;">
+                        <div class="article-card-modern">
+                            <div class="article-image-wrapper">
+                                {% if post.picture %}
+                                    <img src="{{ asset('uploads/posts/' ~ post.picture) }}" alt="{{ post.title }}">
+                                    <div class="article-image-overlay">
+                                        <i class="bi bi-tag-fill me-1"></i>{{ post.category.getTranslatedName(app.request.locale) }}
+                                    </div>
+                                {% else %}
+                                    <div class="article-placeholder">
+                                        <i class="bi bi-image-fill"></i>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="article-body">
+                                <h5 class="article-title">{{ post.getTranslatedTitle(app.request.locale) }}</h5>
+                                <p class="article-excerpt">{{ post.getTranslatedContent(app.request.locale)|slice(0, 120) }}...</p>
+                                
+                                <div class="article-meta">
+                                    <span class="article-date">
+                                        <i class="bi bi-calendar3"></i>
+                                        {{ post.publishedAt ? post.publishedAt|date('d/m/Y') : ('home.recent_articles.published_soon'|trans) }}
+                                    </span>
+                                </div>
+                                
+                                <a href="{{ path('post_show', {id: post.id}) }}" class="article-read-btn">
+                                    <i class="bi bi-book-fill"></i>
+                                    {{ 'home.recent_articles.read_more'|trans }}
                                 </a>
                             </div>
                         </div>
                     </div>
+                {% endfor %}
+            {% else %}
+                <div class="col-12">
+                    <div class="alert alert-info text-center py-5" role="alert" style="border-radius: 20px; border: none; background: linear-gradient(135deg, #e0f2fe 0%, #dbeafe 100%);">
+                        <i class="bi bi-info-circle-fill fs-1 d-block mb-3" style="color: #0ea5e9;"></i>
+                        <h4 style="color: #0c4a6e;">{{ 'home.recent_articles.no_articles'|trans }}</h4>
+                        <p class="mb-0" style="color: #475569;">{{ 'home.recent_articles.no_articles_desc'|trans }}</p>
+                    </div>
                 </div>
-            {% endfor %}
-        {% else %}
-            <p class="text-center text-muted">Aucun article disponible pour le moment.</p>
-        {% endif %}
-    </div>
-</section>
+            {% endif %}
+        </div>
+    </section>
 
-    <!-- Catégories -->
+    <!-- Catégories Populaires -->
     <section class="my-5">
-        <h2 class="text-center fw-bold mb-4 animate-fade-in">Catégories Populaires</h2>
-        <div class="row g-3">
+        <div class="section-header fade-in-up">
+            <h2 class="section-title">{{ 'home.categories.title'|trans }}</h2>
+            <p class="section-subtitle">{{ 'home.categories.subtitle'|trans }}</p>
+        </div>
+        
+        <div class="row g-4">
             {% for category in categories %}
-                <div class="col-md-6 col-lg-4">
-                    <div class="card shadow-lg rounded-3 border-0 bg-light transition-shadow">
-                        <div class="card-body text-center">
-                            <h5 class="card-title fw-bold">{{ category.name }}</h5>
-                            <p class="card-text text-muted">
-                                {{ category.description|default('Aucune description disponible') }}
-                            </p>
-                            <a href="{{ path('category_show', {id: category.id}) }}" class="btn btn-primary btn-sm hover-illuminate">
-                                Voir les articles
-                            </a>
+                <div class="col-md-6 col-lg-4 fade-in-up" style="animation-delay: {{ loop.index * 0.1 }}s;">
+                    <div class="category-card-modern">
+                        <div class="category-icon-box">
+                            <i class="bi bi-tag-fill"></i>
                         </div>
+                        <h5 class="category-name">{{ category.getTranslatedName(app.request.locale) }}</h5>
+                        <p class="category-description">
+                            {{ category.getTranslatedDescription(app.request.locale) }}
+                        </p>
+                        <a href="{{ path('category_show', {id: category.id}) }}" class="category-explore-btn">
+                            <i class="bi bi-arrow-right-circle-fill"></i>
+                            {{ 'home.categories.explore'|trans }}
+                        </a>
                     </div>
                 </div>
             {% endfor %}
@@ -124,20 +534,4 @@
     </section>
 
 </div>
-
-<footer class="text-center py-4 bg-light mt-5 border-top" style="background-color: #6c63ff; color: white;">
-    <p class="text-muted mb-0">&copy; {{ "now"|date("Y") }} Mon Blog Moderne. Tous droits réservés.</p>
-    <div>
-        <a href="https://www.instagram.com/enzo_martzz/" target="_blank" class="text-black mx-2">
-            <i class="fab fa-instagram" style="font-size: 24px;"></i>
-        </a>
-        <a href="https://www.tiktok.com/@enzo_martz" target="_blank" class="text-black mx-2">
-            <i class="fab fa-tiktok" style="font-size: 24px;"></i>
-        </a>
-        <a href="https://github.com/havenito/Blog" target="_blank" class="text-black mx-2">
-            <i class="fab fa-github" style="font-size: 24px;"></i>
-        </a>
-    </div>
-</footer>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 {% endblock %}

@@ -5,11 +5,11 @@
     <link rel="stylesheet" href="{{ asset('bootstrap/css/register.css') }}">
 {% endblock %}
 
-{% block title %}Inscription{% endblock %}
+{% block title %}{{ 'register.title'|trans }}{% endblock %}
 
 {% block body %}
 <div class="container mt-5">
-    <h1 class="text-center mb-4">Créer un compte</h1>
+    <h1 class="text-center mb-4">{{ 'register.title'|trans }}</h1>
 
     <div class="row justify-content-center">
         <div class="col-md-6">
@@ -18,7 +18,7 @@
 
                     {% if registrationForm.vars.errors|length > 0 %}
                         <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                            <h5 class="alert-heading"><i class="fas fa-exclamation-circle"></i> Une erreur est survenue :</h5>
+                            <h5 class="alert-heading"><i class="fas fa-exclamation-circle"></i> {{ 'message.error'|trans }} :</h5>
                             {% for error in registrationForm.vars.errors %}
                                 <p class="mb-0">{{ error.message }}</p>
                             {% endfor %}
@@ -29,42 +29,46 @@
                     {{ form_start(registrationForm) }}
 
                     <div class="mb-3">
-                        {{ form_label(registrationForm.firstName, 'Prénom', {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_label(registrationForm.firstName, 'register.first_name'|trans, {'label_attr': {'class': 'form-label'}}) }}
                         {{ form_widget(registrationForm.firstName, {'attr': {'class': 'form-control'}}) }}
                         {{ form_errors(registrationForm.firstName, {'attr': {'class': 'text-danger'}}) }}
                     </div>
 
                     <div class="mb-3">
-                        {{ form_label(registrationForm.lastName, 'Nom', {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_label(registrationForm.lastName, 'register.last_name'|trans, {'label_attr': {'class': 'form-label'}}) }}
                         {{ form_widget(registrationForm.lastName, {'attr': {'class': 'form-control'}}) }}
                         {{ form_errors(registrationForm.lastName, {'attr': {'class': 'text-danger'}}) }}
                     </div>
 
                     <div class="mb-3">
-                        {{ form_label(registrationForm.email, 'Adresse e-mail', {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_label(registrationForm.email, 'register.email_label'|trans, {'label_attr': {'class': 'form-label'}}) }}
                         {{ form_widget(registrationForm.email, {'attr': {'class': 'form-control'}}) }}
                         {{ form_errors(registrationForm.email, {'attr': {'class': 'text-danger'}}) }}
                     </div>
 
                     <div class="mb-3">
-                        {{ form_label(registrationForm.plainPassword.first, 'Mot de passe', {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_label(registrationForm.plainPassword.first, 'register.password_label'|trans, {'label_attr': {'class': 'form-label'}}) }}
                         {{ form_widget(registrationForm.plainPassword.first, {'attr': {'class': 'form-control'}}) }}
                         {{ form_errors(registrationForm.plainPassword.first, {'attr': {'class': 'text-danger'}}) }}
                     </div>
 
                     <div class="mb-3">
-                        {{ form_label(registrationForm.plainPassword.second, 'Confirmer le mot de passe', {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_label(registrationForm.plainPassword.second, 'register.confirm_password'|trans, {'label_attr': {'class': 'form-label'}}) }}
                         {{ form_widget(registrationForm.plainPassword.second, {'attr': {'class': 'form-control'}}) }}
                         {{ form_errors(registrationForm.plainPassword.second, {'attr': {'class': 'text-danger'}}) }}
                     </div>
 
                     <div class="mb-3">
-                        {{ form_label(registrationForm.profilePicture, 'Photo de profil', {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_label(registrationForm.profilePicture, 'register.profile_picture'|trans, {'label_attr': {'class': 'form-label'}}) }}
                         {{ form_widget(registrationForm.profilePicture, {'attr': {'class': 'form-control'}}) }}
                         {{ form_errors(registrationForm.profilePicture, {'attr': {'class': 'text-danger'}}) }}
                     </div>
 
-                    <button type="submit" class="btn btn-primary w-100 mt-3 hover-illuminate">S'inscrire</button>
+                    <button type="submit" class="btn btn-primary w-100 mt-3 hover-illuminate">{{ 'register.submit'|trans }}</button>
+                    
+                    <div class="text-center mt-3">
+                        <p class="text-muted">{{ 'register.already_account'|trans }} <a href="{{ path('app_login') }}">{{ 'register.login_here'|trans }}</a></p>
+                    </div>
                     
                     {{ form_end(registrationForm) }}
                 </div>

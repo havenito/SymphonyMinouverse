@@ -1,0 +1,176 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestion des Signalements - Admin{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="fw-bold">
+            <i class="bi bi-flag me-2"></i>
+            Gestion des Signalements
+        </h1>
+        <a href="{{ path('admin_users') }}" class="btn btn-secondary">
+            <i class="bi bi-arrow-left me-1"></i>
+            Retour à la gestion
+        </a>
+    </div>
+
+    <!-- Signalements en attente -->
+    <h2 class="h4 mb-3">
+        <i class="bi bi-exclamation-triangle me-2 text-warning"></i>
+        Signalements en attente ({{ pendingReports|length }})
+    </h2>
+
+    {% if pendingReports %}
+        {% for report in pendingReports %}
+            <div class="card mb-3 border-warning">
+                <div class="card-header bg-warning bg-opacity-25">
+                    <div class="row align-items-center">
+                        <div class="col">
+                            <h6 class="mb-0">
+                                <i class="bi bi-flag-fill me-2"></i>
+                                Signalement de 
+                                {% if report.reportedBy %}
+                                    {{ report.reportedBy.firstName }} {{ report.reportedBy.lastName }}
+                                {% else %}
+                                    <em>Utilisateur supprimé</em>
+                                {% endif %}
+                            </h6>
+                            <small class="text-muted">{{ report.reportedAt|date('d/m/Y H:i') }}</small>
+                        </div>
+                        <div class="col-auto">
+                            <span class="badge bg-warning">{{ report.reportCategory }}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <h6>Commentaire signalé :</h6>
+                            <blockquote class="blockquote">
+                                <p class="mb-2">{{ report.comment.content }}</p>
+                                <footer class="blockquote-footer">
+                                    Par 
+                                    {% if report.comment.user %}
+                                        <strong>{{ report.comment.user.firstName }} {{ report.comment.user.lastName }}</strong>
+                                    {% else %}
+                                        <strong><em>Utilisateur supprimé</em></strong>
+                                    {% endif %}
+                                    le {{ report.comment.createdAt|date('d/m/Y H:i') }}
+                                    <br>
+                                    {% if report.comment.user %}
+                                        <small class="text-muted">Warnings actuels : {{ report.comment.user.warningCount }}/3</small>
+                                    {% endif %}
+                                </footer>
+                            </blockquote>
+                            
+                            {% if report.reason %}
+                                <h6 class="mt-3">Raison du signalement :</h6>
+                                <p class="text-muted">{{ report.reason }}</p>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-4">
+                            <h6>Actions :</h6>
+                            {% if report.comment.user %}
+                                <div class="d-grid gap-2">
+                                    <!-- Formulaire pour avertir -->
+                                    <form method="post" action="{{ path('admin_report_warn', {id: report.id}) }}" style="display: inline;">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('warn_report_' ~ report.id) }}" />
+                                        <input type="hidden" name="reason" value="Commentaire inapproprié signalé" />
+                                        <button type="submit" class="btn btn-warning btn-sm w-100" 
+                                                onclick="return confirm('Avertir {{ report.comment.user.firstName }} {{ report.comment.user.lastName }} ?\n\nWarnings actuels: {{ report.comment.user.warningCount }}/3{% if report.comment.user.warningCount >= 2 %}\n\n⚠️ L\'utilisateur sera automatiquement banni après cet avertissement !{% endif %}')">
+                                            <i class="bi bi-exclamation-triangle me-1"></i>
+                                            Avertir ({{ report.comment.user.warningCount }}/3)
+                                        </button>
+                                    </form>
+
+                                    <!-- Formulaire pour bannir -->
+                                    <form method="post" action="{{ path('admin_report_ban', {id: report.id}) }}" style="display: inline;">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('ban_report_' ~ report.id) }}" />
+                                        <input type="hidden" name="reason" value="Commentaire gravement inapproprié signalé" />
+                                        <button type="submit" class="btn btn-danger btn-sm w-100"
+                                                onclick="return confirm('⚠️ BANNIR DÉFINITIVEMENT {{ report.comment.user.firstName }} {{ report.comment.user.lastName }} ?\n\nCette action est irréversible !')">
+                                            <i class="bi bi-ban me-1"></i>
+                                            Bannir
+                                        </button>
+                                    </form>
+
+                                    <!-- Rejeter le signalement -->
+                                    <a href="{{ path('admin_report_dismiss', {id: report.id}) }}" 
+                                       class="btn btn-secondary btn-sm"
+                                       onclick="return confirm('Rejeter ce signalement ?')">
+                                        <i class="bi bi-x-circle me-1"></i>
+                                        Rejeter
+                                    </a>
+                                </div>
+                            {% else %}
+                                <div class="alert alert-warning">
+                                    <i class="bi bi-info-circle me-2"></i>
+                                    L'utilisateur a été supprimé.
+                                    <a href="{{ path('admin_report_dismiss', {id: report.id}) }}" 
+                                       class="btn btn-secondary btn-sm mt-2 w-100"
+                                       onclick="return confirm('Rejeter ce signalement ?')">
+                                        <i class="bi bi-x-circle me-1"></i>
+                                        Rejeter
+                                    </a>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        {% endfor %}
+    {% else %}
+        <div class="alert alert-info">
+            <i class="bi bi-info-circle me-2"></i>
+            Aucun signalement en attente.
+        </div>
+    {% endif %}
+
+    <!-- Signalements résolus -->
+    {% if resolvedReports %}
+        <h2 class="h4 mb-3 mt-5">
+            <i class="bi bi-check-circle me-2 text-success"></i>
+            Signalements résolus ({{ resolvedReports|length }})
+        </h2>
+
+        <div class="accordion" id="resolvedReportsAccordion">
+            {% for report in resolvedReports %}
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ report.id }}">
+                            <i class="bi bi-check-circle me-2 text-success"></i>
+                            Signalement de 
+                            {% if report.reportedBy %}
+                                {{ report.reportedBy.firstName }} {{ report.reportedBy.lastName }}
+                            {% else %}
+                                <em>Utilisateur supprimé</em>
+                            {% endif %}
+                            - {{ report.reportedAt|date('d/m/Y') }}
+                            <span class="badge bg-secondary ms-2">{{ report.reportCategory }}</span>
+                        </button>
+                    </h2>
+                    <div id="collapse{{ report.id }}" class="accordion-collapse collapse" data-bs-parent="#resolvedReportsAccordion">
+                        <div class="accordion-body">
+                            <p><strong>Commentaire :</strong> {{ report.comment.content|default('Commentaire supprimé') }}</p>
+                            {% if report.reason %}
+                                <p><strong>Raison :</strong> {{ report.reason }}</p>
+                            {% endif %}
+                            <p><strong>Résolu par :</strong> 
+                                {% if report.reviewedBy %}
+                                    {{ report.reviewedBy.firstName }} {{ report.reviewedBy.lastName }}
+                                {% else %}
+                                    <em>Utilisateur supprimé</em>
+                                {% endif %}
+                            </p>
+                            <p><strong>Date de résolution :</strong> {{ report.reviewedAt|date('d/m/Y H:i') }}</p>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

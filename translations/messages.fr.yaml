@@ -1,0 +1,171 @@
+# Navbar
+nav.home: Accueil
+nav.articles: Articles
+nav.categories: Catégories
+nav.contact: Contact
+nav.admin: Gestion Admin
+nav.users: Utilisateurs
+nav.reports: Signalements
+nav.suggestions: Suggestions
+nav.logout: Déconnexion
+nav.login: Connexion
+nav.register: Inscription
+nav.theme_toggle: Changer le thème
+
+# Footer
+footer.copyright: © 2025 Mon Blog Moderne. Tous droits réservés.
+footer.follow: Suivez-moi
+footer.contact: Contact
+footer.location: Paris, France
+footer.language: Langue
+
+# Page Titles
+title.home: Mon Blog
+title.articles: Articles
+title.categories: Catégories
+title.login: Connexion
+title.register: Inscription
+title.profile: Profil
+
+# Buttons
+button.read_more: Lire la suite
+button.submit: Envoyer
+button.cancel: Annuler
+button.edit: Modifier
+button.delete: Supprimer
+button.back: Retour
+button.view: Voir
+button.modify: Modifier
+button.create: Créer
+
+# Forms
+form.email: Email
+form.password: Mot de passe
+form.confirm_password: Confirmer le mot de passe
+form.username: Nom d'utilisateur
+form.remember_me: Se souvenir de moi
+
+# Messages
+message.welcome: Bienvenue
+message.error: Une erreur s'est produite
+message.success: Opération réussie
+message.no_articles: Aucun article disponible
+message.no_categories: Aucune catégorie disponible
+
+# Categories
+category.all: Toutes les catégories
+category.name: Nom de la catégorie
+
+# Posts
+post.by: Par
+post.on: Le
+post.comments: commentaires
+post.views: vues
+
+# Admin
+admin.dashboard: Tableau de bord
+admin.manage: Gérer
+
+# Dates
+date.today: Aujourd'hui
+date.yesterday: Hier
+
+# Home Page
+home.hero.title: Bienvenue sur Minouverse
+home.hero.subtitle: Découvrez des articles passionnants, partagez vos idées et rejoignez une communauté créative
+home.hero.explore_articles: Explorer les Articles
+home.hero.view_categories: Voir les Catégories
+home.stats.articles_published: Articles Publiés
+home.stats.categories: Catégories
+home.stats.active_members: Membres Actifs
+home.recent_articles.title: Articles Récents
+home.recent_articles.subtitle: Découvrez nos dernières publications
+home.recent_articles.read_more: Lire la suite
+home.recent_articles.published_soon: Bientôt
+home.recent_articles.no_articles: Aucun article disponible
+home.recent_articles.no_articles_desc: Revenez plus tard pour découvrir nos nouveaux contenus !
+home.categories.title: Catégories Populaires
+home.categories.subtitle: Explorez les thématiques qui vous passionnent
+home.categories.explore: Explorer
+home.categories.default_desc: Découvrez tous les articles de cette catégorie
+
+# Post List
+post.list.title: Tous les Articles
+post.list.search_placeholder: Rechercher un article...
+post.list.filter_category: Filtrer par catégorie
+post.list.all_categories: Toutes les catégories
+post.list.sort_by: Trier par
+post.list.most_recent: Plus récents
+post.list.most_viewed: Plus vus
+post.list.no_posts: Aucun article trouvé
+post.list.create_post: Créer un article
+
+# Post Show
+post.show.back_to_list: Retour aux articles
+post.show.written_by: Écrit par
+post.show.published_on: Publié le
+post.show.views: vues
+post.show.share: Partager
+post.show.edit: Modifier l'article
+post.show.delete: Supprimer l'article
+post.show.comments: Commentaires
+post.show.add_comment: Ajouter un commentaire
+post.show.login_to_comment: Connectez-vous pour commenter
+post.show.submit_comment: Publier le commentaire
+post.show.no_comments: Aucun commentaire pour le moment
+post.show.be_first: Soyez le premier à commenter !
+post.show.report: Signaler
+post.show.report_info: Vous pouvez signaler les commentaires inappropriés en cliquant sur le bouton
+post.show.no_comments_article: Aucun commentaire pour cet article.
+post.show.admin_no_comment: Vous êtes administrateur, vous n'avez pas besoin d'ajouter de commentaires.
+post.show.add_comment_title: Ajouter un commentaire
+
+# Category List
+category.list.title: Toutes les Catégories
+category.list.explore_category: Explorer
+category.list.articles_count: articles
+category.list.suggest_category: Suggérer une catégorie
+category.list.create_category: Créer une catégorie
+category.list.no_categories: Aucune catégorie trouvée
+category.list.create_first: Créez votre première catégorie pour commencer !
+
+# Category Show
+category.show.back_to_categories: Retour aux catégories
+category.show.articles_in_category: Articles dans cette catégorie
+category.show.no_articles: Aucun article dans cette catégorie
+category.show.no_articles_desc: Consultez d'autres catégories ou revenez plus tard
+category.show.deleted_author: Auteur supprimé
+category.show.not_published: Non publié
+category.show.read_article: Lire l'article
+
+# Login
+login.title: Connexion
+login.email_label: Adresse email
+login.password_label: Mot de passe
+login.remember_me: Se souvenir de moi
+login.submit: Se connecter
+login.no_account: Pas encore de compte ?
+login.register_here: Inscrivez-vous ici
+
+# Register
+register.title: Inscription
+register.username_label: Nom d'utilisateur
+register.email_label: Adresse email
+register.password_label: Mot de passe
+register.password_placeholder: Choisissez un mot de passe sécurisé
+register.confirm_password: Confirmer le mot de passe
+register.first_name: Prénom
+register.last_name: Nom
+register.profile_picture: Photo de profil
+register.submit: S'inscrire
+register.already_account: Vous avez déjà un compte ?
+register.login_here: Connectez-vous ici
+
+# Two Factor Authentication
+2fa.menu: Double authentification
+2fa.title: Double authentification
+2fa.setup.title: Configurer la double authentification (2FA)
+2fa.status.enabled: La double authentification est activée
+2fa.status.disabled: La double authentification est désactivée
+2fa.verify.title: Vérification de sécurité
+2fa.verify.enter_code: Entrez le code de vérification

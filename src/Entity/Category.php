@@ -22,6 +22,12 @@ class Category
     #[ORM\Column(type: Types::TEXT)]
     private ?string $description = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $nameEn = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $descriptionEn = null;
+
     /**
      * @var Collection<int, Post>
      */
@@ -90,5 +96,43 @@ class Category
         }
 
         return $this;
+    }
+
+    public function getNameEn(): ?string
+    {
+        return $this->nameEn;
+    }
+
+    public function setNameEn(?string $nameEn): static
+    {
+        $this->nameEn = $nameEn;
+        return $this;
+    }
+
+    public function getDescriptionEn(): ?string
+    {
+        return $this->descriptionEn;
+    }
+
+    public function setDescriptionEn(?string $descriptionEn): static
+    {
+        $this->descriptionEn = $descriptionEn;
+        return $this;
+    }
+
+    public function getTranslatedName(string $locale = 'fr'): string
+    {
+        if ($locale === 'en' && $this->nameEn) {
+            return $this->nameEn;
+        }
+        return $this->name ?? '';
+    }
+
+    public function getTranslatedDescription(string $locale = 'fr'): string
+    {
+        if ($locale === 'en' && $this->descriptionEn) {
+            return $this->descriptionEn;
+        }
+        return $this->description ?? '';
     }
 }

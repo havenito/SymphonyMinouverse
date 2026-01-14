@@ -1,0 +1,113 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Vérification 2FA{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0"><i class="fas fa-mobile-alt"></i> Vérification de sécurité</h3>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i> Entrez le code à 6 chiffres depuis votre application d'authentification.
+                    </div>
+
+                    <form method="post" action="{{ path('app_2fa_check') }}" id="2faForm">
+                        <div class="mb-4">
+                            <label for="code" class="form-label"><strong>Code de vérification</strong></label>
+                            <input type="text" 
+                                   class="form-control form-control-lg text-center" 
+                                   id="code"
+                                   name="code" 
+                                   placeholder="000000" 
+                                   pattern="[0-9A-Z]{6,8}" 
+                                   maxlength="8" 
+                                   required 
+                                   autofocus>
+                            <div class="form-text">Entrez le code à 6 chiffres de votre application.</div>
+                        </div>
+
+                        <input type="hidden" name="use_backup_code" id="useBackupCode" value="0">
+                        <input type="hidden" name="_csrf_token" value="{{ csrf_token('2fa-check') }}">
+                        
+                        <button type="submit" class="btn btn-primary btn-lg w-100 mb-3">
+                            <i class="fas fa-check"></i> Vérifier
+                        </button>
+
+                        <div class="text-center">
+                            <a href="#" class="text-muted" onclick="showBackupCodeInput(); return false;">
+                                <i class="fas fa-key"></i> Utiliser un code de récupération
+                            </a>
+                        </div>
+                    </form>
+
+                    <hr class="my-3">
+
+                    <div class="text-center">
+                        <a href="{{ path('app_logout') }}" class="text-danger">
+                            <i class="fas fa-sign-out-alt"></i> Se déconnecter
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center mt-3">
+                <small class="text-muted">
+                    <i class="fas fa-question-circle"></i> Problème d'accès ? 
+                    <a href="#" data-bs-toggle="modal" data-bs-target="#helpModal">Obtenir de l'aide</a>
+                </small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal d'aide -->
+<div class="modal fade" id="helpModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="fas fa-question-circle"></i> Aide - Double authentification</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <h6><i class="fas fa-mobile-alt"></i> Impossible d'accéder à votre téléphone ?</h6>
+                <p>Utilisez l'un de vos <strong>codes de récupération</strong> que vous avez sauvegardés lors de la configuration de la 2FA.</p>
+                
+                <h6 class="mt-3"><i class="fas fa-clock"></i> Le code ne fonctionne pas ?</h6>
+                <p>Vérifiez que l'heure sur votre téléphone est correcte. Les codes TOTP dépendent de l'heure exacte.</p>
+                
+                <h6 class="mt-3"><i class="fas fa-life-ring"></i> Besoin d'aide supplémentaire ?</h6>
+                <p>Contactez un administrateur système pour réinitialiser votre 2FA.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function showBackupCodeInput() {
+    const result = prompt('Entrez l\'un de vos codes de récupération à 8 caractères :');
+    if (result) {
+        document.getElementById('code').value = result.toUpperCase();
+        document.getElementById('useBackupCode').value = '1';
+        document.getElementById('code').placeholder = 'XXXXXXXX';
+        document.getElementById('code').pattern = '[0-9A-Z]{8}';
+        document.getElementById('code').maxLength = 8;
+    }
+}
+
+// Auto-submit quand 6 chiffres sont entrés
+document.getElementById('code').addEventListener('input', function(e) {
+    if (this.value.length === 6 && /^\d{6}$/.test(this.value)) {
+        setTimeout(() => {
+            document.getElementById('2faForm').submit();
+        }, 300);
+    }
+});
+</script>
+{% endblock %}

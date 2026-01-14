@@ -4,34 +4,269 @@
 
 {% block stylesheets %}
     {{ parent() }}
-    <link rel="stylesheet" href="{{ asset('bootstrap/css/category-show.css') }}">
+    <style>
+        .text-gradient-primary {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .category-header {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            padding: 3rem 2rem;
+            border-radius: 20px;
+            color: white;
+            margin-bottom: 3rem;
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3);
+        }
+        
+        .category-header h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 0.75rem;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        
+        .category-header p {
+            font-size: 1.1rem;
+            opacity: 0.95;
+            margin-bottom: 0;
+        }
+        
+        .article-card {
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            transition: all 0.4s ease;
+            border: 1px solid rgba(99, 102, 241, 0.1);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .article-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 35px rgba(99, 102, 241, 0.2);
+        }
+        
+        .article-image-container {
+            overflow: hidden;
+            height: 250px;
+            position: relative;
+        }
+        
+        .article-image-container img {
+            object-fit: cover;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.4s ease;
+        }
+        
+        .article-card:hover .article-image-container img {
+            transform: scale(1.05);
+        }
+        
+        .article-placeholder {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            height: 100%;
+        }
+        
+        .card-body {
+            padding: 1.5rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .card-title {
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 1rem;
+            font-size: 1.25rem;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        
+        .card-text {
+            color: #64748b;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+            flex-grow: 1;
+        }
+        
+        .card-footer {
+            background: #f8fafc;
+            border-top: 1px solid rgba(99, 102, 241, 0.1);
+            padding: 1.25rem 1.5rem;
+        }
+        
+        .author-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+        
+        .author-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 1rem;
+        }
+        
+        .author-details {
+            flex-grow: 1;
+        }
+        
+        .author-name {
+            font-weight: 600;
+            color: #1e293b;
+            font-size: 0.9rem;
+            margin-bottom: 0.125rem;
+        }
+        
+        .publish-date {
+            color: #64748b;
+            font-size: 0.85rem;
+        }
+        
+        .btn-read {
+            width: 100%;
+            padding: 0.75rem;
+            border-radius: 12px;
+            font-weight: 600;
+            border: none;
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            color: white;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-read:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.35);
+            color: white;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border-radius: 20px;
+            border: 2px dashed #cbd5e1;
+        }
+        
+        .empty-state i {
+            font-size: 4rem;
+            color: #94a3b8;
+            margin-bottom: 1.5rem;
+        }
+        
+        .empty-state h4 {
+            color: #475569;
+            margin-bottom: 0.5rem;
+        }
+        
+        .empty-state p {
+            color: #64748b;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.6s ease forwards;
+        }
+    </style>
 {% endblock %}
 
 {% block title %}{{ category.name }}{% endblock %}
 
 {% block body %}
 <div class="container mt-5">
-    <h1 class="text-center">{{ category.name }}</h1>
-    <p class="text-muted text-center">{{ category.description }}</p>
+    <div class="category-header text-center fade-in">
+        <h1>{{ category.getTranslatedName(app.request.locale) }}</h1>
+        <p>{{ category.getTranslatedDescription(app.request.locale) }}</p>
+    </div>
 
-    <h3 class="mt-4">Articles dans cette catégorie</h3>
-    <div class="row g-4 mt-3">
+    <div class="row g-4">
         {% for post in category.posts %}
-            <div class="col-md-4">
-                <div class="card shadow-sm h-100">
-
-                    <div class="card-body d-flex flex-column">
-                        <h5 class="card-title">{{ post.title }}</h5>
-                        <p class="card-text flex-grow-1">{{ post.content|slice(0, 100) ~ '...' }}</p>
-                        <a href="{{ path('post_show', {id: post.id}) }}" class="btn btn-primary mt-auto">Lire l'article</a>
+            <div class="col-md-6 col-lg-4 fade-in" style="animation-delay: {{ loop.index * 0.1 }}s;">
+                <div class="article-card">
+                    <div class="article-image-container">
+                        {% if post.picture %}
+                            <img src="{{ asset('uploads/posts/' ~ post.picture) }}" 
+                                 alt="Image de {{ post.getTranslatedTitle(app.request.locale) }}">
+                        {% else %}
+                            <div class="article-placeholder">
+                                <i class="bi bi-image-fill fs-1"></i>
+                            </div>
+                        {% endif %}
                     </div>
-                    <div class="card-footer text-muted text-center">
-                        <small>Publié par {{ post.user.firstName }} {{ post.user.lastName }}</small>
+                    
+                    <div class="card-body">
+                        <h5 class="card-title">{{ post.getTranslatedTitle(app.request.locale) }}</h5>
+                        <p class="card-text">{{ post.getTranslatedContent(app.request.locale)|slice(0, 120) }}...</p>
+                    </div>
+                    
+                    <div class="card-footer">
+                        <div class="author-info">
+                            <div class="author-avatar">
+                                {% if post.user %}
+                                    {{ post.user.firstName|first }}{{ post.user.lastName|first }}
+                                {% else %}
+                                    ?
+                                {% endif %}
+                            </div>
+                            <div class="author-details">
+                                <div class="author-name">
+                                    {% if post.user %}
+                                        {{ post.user.firstName }} {{ post.user.lastName }}
+                                    {% else %}
+                                        <em>{{ 'category.show.deleted_author'|trans }}</em>
+                                    {% endif %}
+                                </div>
+                                <div class="publish-date">
+                                    <i class="bi bi-calendar3 me-1"></i>
+                                    {{ post.publishedAt ? post.publishedAt|date('d/m/Y') : ('category.show.not_published'|trans) }}
+                                </div>
+                            </div>
+                        </div>
+                        <a href="{{ path('post_show', {id: post.id}) }}" class="btn-read">
+                            <i class="bi bi-book-fill me-2"></i>{{ 'category.show.read_article'|trans }}
+                        </a>
                     </div>
                 </div>
             </div>
         {% else %}
-            <p class="text-center">Aucun article dans cette catégorie.</p>
+            <div class="col-12">
+                <div class="empty-state fade-in">
+                    <i class="bi bi-inbox"></i>
+                    <h4>{{ 'category.show.no_articles'|trans }}</h4>
+                    <p>{{ 'category.show.no_articles_desc'|trans }}</p>
+                </div>
+            </div>
         {% endfor %}
     </div>
 </div>

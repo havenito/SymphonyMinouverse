@@ -38,7 +38,7 @@
 }
 
 .hover-illuminate:hover {
-    background-color: #ffffff;
+    /* Background removed - handled by dark-mode.css */
     color: #6c63ff;
     transform: scale(1.05);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -61,7 +61,7 @@ footer {
 }
 
 h2 {
-    color: #333333;
+    /* Color removed - handled by dark-mode.css */
     border-bottom: 2px solid #6c63ff;
     display: inline-block;
     padding-bottom: 5px;
@@ -85,18 +85,15 @@ h2 {
     object-fit: cover;
     height: 100%;
     width: 100%;
-    opacity: 0;
-    transition: opacity 1s ease-in-out; 
-}
-
-.hero-section .carousel-item.active img {
-    opacity: 1;
 }
 
 .hero-section .carousel-caption {
     top: 50%;
     transform: translateY(-50%);
     text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.3);
+    padding: 2rem;
+    border-radius: 10px;
 }
 
 .hero-section .carousel-caption h1 {

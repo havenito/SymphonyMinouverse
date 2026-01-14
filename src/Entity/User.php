@@ -47,8 +47,29 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'boolean')]
     private bool $isActive = true; // Par défaut, un utilisateur est actif.
 
-    #[ORM\Column(type: 'boolean')]
+    #[ORM\Column(type: 'boolean', options: ['default' => false])]
     private bool $isAccepted = false; // Par défaut, l'utilisateur n'est pas accepté.
+
+    #[ORM\Column(type: 'integer', options: ['default' => 0])]
+    private int $warningCount = 0;
+
+    #[ORM\Column(type: 'boolean', options: ['default' => false])]
+    private bool $isBanned = false;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $bannedAt = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $banReason = null;
+
+    #[ORM\Column(type: 'boolean', options: ['default' => false])]
+    private bool $twoFactorEnabled = false;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $twoFactorSecret = null;
+
+    #[ORM\Column(type: Types::JSON, nullable: true)]
+    private ?array $backupCodes = null;
 
     /**
      * @var Collection<int, Post>
@@ -260,6 +281,108 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             }
         }
 
+        return $this;
+    }
+
+    public function getWarningCount(): int
+    {
+        return $this->warningCount;
+    }
+
+    public function setWarningCount(int $warningCount): self
+    {
+        $this->warningCount = $warningCount;
+        return $this;
+    }
+
+    public function addWarning(): self
+    {
+        $this->warningCount++;
+        if ($this->warningCount >= 3) {
+            $this->isBanned = true;
+            $this->bannedAt = new \DateTime();
+            $this->banReason = 'Banni automatiquement après 3 avertissements';
+        }
+        return $this;
+    }
+
+    public function getIsBanned(): bool
+    {
+        return $this->isBanned;
+    }
+
+    public function setIsBanned(bool $isBanned): self
+    {
+        $this->isBanned = $isBanned;
+        if ($isBanned && !$this->bannedAt) {
+            $this->bannedAt = new \DateTime();
+        }
+        return $this;
+    }
+
+    public function getBannedAt(): ?\DateTimeInterface
+    {
+        return $this->bannedAt;
+    }
+
+    public function setBannedAt(?\DateTimeInterface $bannedAt): self
+    {
+        $this->bannedAt = $bannedAt;
+        return $this;
+    }
+
+    public function getBanReason(): ?string
+    {
+        return $this->banReason;
+    }
+
+    public function setBanReason(?string $banReason): self
+    {
+        $this->banReason = $banReason;
+        return $this;
+    }
+
+    public function isTwoFactorEnabled(): bool
+    {
+        return $this->twoFactorEnabled;
+    }
+
+    public function setTwoFactorEnabled(bool $twoFactorEnabled): self
+    {
+        $this->twoFactorEnabled = $twoFactorEnabled;
+        return $this;
+    }
+
+    public function getTwoFactorSecret(): ?string
+    {
+        return $this->twoFactorSecret;
+    }
+
+    public function setTwoFactorSecret(?string $twoFactorSecret): self
+    {
+        $this->twoFactorSecret = $twoFactorSecret;
+        return $this;
+    }
+
+    public function getBackupCodes(): ?array
+    {
+        return $this->backupCodes;
+    }
+
+    public function setBackupCodes(?array $backupCodes): self
+    {
+        $this->backupCodes = $backupCodes;
+        return $this;
+    }
+
+    public function removeBackupCode(string $code): self
+    {
+        if ($this->backupCodes !== null) {
+            $this->backupCodes = array_filter($this->backupCodes, function($hashedCode) use ($code) {
+                return !password_verify($code, $hashedCode);
+            });
+            $this->backupCodes = array_values($this->backupCodes); // Ré-indexer
+        }
         return $this;
     }
 }

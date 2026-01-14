@@ -1,0 +1,65 @@
+services:
+  database:
+    image: mysql:8.0
+    container_name: blog_minouverse_db
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_DATABASE: blog_db
+      MYSQL_USER: blog_user
+      MYSQL_PASSWORD: blog_password
+    ports:
+      - "3307:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./docker/mysql/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    networks:
+      - blog_network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-prootpass"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: blog_minouverse_phpmyadmin
+    environment:
+      PMA_HOST: database
+      PMA_PORT: 3306
+      PMA_USER: blog_user
+      PMA_PASSWORD: blog_password
+    ports:
+      - "8081:80"
+    depends_on:
+      - database
+    networks:
+      - blog_network
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: blog_minouverse_web
+    ports:
+      - "8080:80"
+    volumes:
+      - .:/var/www/html
+      - /var/www/html/vendor
+      - /var/www/html/var
+    environment:
+      DATABASE_URL: "mysql://blog_user:blog_password@database:3306/blog_db?serverVersion=8.0&charset=utf8mb4"
+      APP_ENV: dev
+      APP_SECRET: your-secret-key-change-this-in-production
+    depends_on:
+      database:
+        condition: service_healthy
+    networks:
+      - blog_network
+
+volumes:
+  db_data:
+    driver: local
+
+networks:
+  blog_network:
+    driver: bridge

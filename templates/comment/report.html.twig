@@ -1,0 +1,91 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Signaler un Commentaire{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-warning text-dark">
+                    <h4 class="mb-0">
+                        <i class="bi bi-flag me-2"></i>
+                        Signaler un commentaire
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <!-- Commentaire à signaler -->
+                    <div class="alert alert-light border">
+                        <h6>Commentaire à signaler :</h6>
+                        <blockquote class="blockquote">
+                            <p class="mb-2">{{ comment.content }}</p>
+                            <footer class="blockquote-footer">
+                                Par 
+                                {% if comment.user %}
+                                    <strong>{{ comment.user.firstName }} {{ comment.user.lastName }}</strong>
+                                {% else %}
+                                    <strong><em>Utilisateur supprimé</em></strong>
+                                {% endif %}
+                                le {{ comment.createdAt|date('d/m/Y H:i') }}
+                            </footer>
+                        </blockquote>
+                    </div>
+
+                    <p class="text-muted mb-4">
+                        Si vous pensez que ce commentaire viole nos règles de conduite, 
+                        veuillez nous indiquer la nature du problème.
+                    </p>
+
+                    {{ form_start(form) }}
+                        <div class="mb-3">
+                            {{ form_label(form.reportCategory, null, {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                            {{ form_widget(form.reportCategory, {'attr': {'class': 'form-select'}}) }}
+                            {{ form_errors(form.reportCategory) }}
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form_label(form.reason, null, {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                            {{ form_widget(form.reason, {'attr': {'class': 'form-control'}}) }}
+                            {{ form_errors(form.reason) }}
+                            <div class="form-text">
+                                Optionnel : donnez plus de détails sur la raison de votre signalement.
+                            </div>
+                        </div>
+
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle me-2"></i>
+                            <strong>Note :</strong> Les signalements abusifs ou répétés peuvent entraîner 
+                            des sanctions sur votre compte. Utilisez cette fonction de manière responsable.
+                        </div>
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a href="{{ path('post_show', {id: comment.post.id}) }}" class="btn btn-secondary me-md-2">
+                                <i class="bi bi-arrow-left me-1"></i>
+                                Annuler
+                            </a>
+                            {{ form_widget(form.submit, {'attr': {'class': 'btn btn-danger'}}) }}
+                        </div>
+                    {{ form_end(form) }}
+                </div>
+            </div>
+
+            <!-- Règles de conduite -->
+            <div class="card mt-4">
+                <div class="card-body">
+                    <h6 class="card-title">
+                        <i class="bi bi-shield-check me-2"></i>
+                        Règles de conduite
+                    </h6>
+                    <ul class="mb-0 small">
+                        <li><strong>Contenu inapproprié :</strong> Messages offensants, discriminatoires ou irrespectueux</li>
+                        <li><strong>Spam :</strong> Messages répétitifs, publicitaires ou hors sujet</li>
+                        <li><strong>Harcèlement :</strong> Attaques personnelles ou intimidation</li>
+                        <li><strong>Langage offensant :</strong> Insultes, vulgarité excessive</li>
+                        <li><strong>Fausses informations :</strong> Propagation de contenus trompeurs</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

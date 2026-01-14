@@ -1,0 +1,73 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Double authentification{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0"><i class="fas fa-shield-alt"></i> Double authentification</h3>
+                </div>
+                <div class="card-body">
+                    {% if is2faEnabled %}
+                        <div class="alert alert-success">
+                            <i class="fas fa-check-circle"></i> La double authentification est <strong>activée</strong> sur votre compte.
+                        </div>
+
+                        <div class="card bg-light mb-3">
+                            <div class="card-body">
+                                <h5><i class="fas fa-info-circle"></i> Informations</h5>
+                                <ul class="mb-0">
+                                    <li>Codes de récupération restants : <strong>{{ backupCodesCount }}</strong></li>
+                                    <li>Votre compte est protégé par un code à 6 chiffres</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        {% if backupCodesCount < 3 %}
+                            <div class="alert alert-warning">
+                                <i class="fas fa-exclamation-triangle"></i> Il vous reste peu de codes de récupération. 
+                                Pensez à régénérer vos codes de sécurité.
+                            </div>
+                        {% endif %}
+
+                        <form method="post" action="{{ path('app_2fa_disable') }}" onsubmit="return confirm('Êtes-vous sûr de vouloir désactiver la double authentification ?');">
+                            <input type="hidden" name="_csrf_token" value="{{ csrf_token('2fa-disable') }}">
+                            <button type="submit" class="btn btn-danger w-100">
+                                <i class="fas fa-times-circle"></i> Désactiver la double authentification
+                            </button>
+                        </form>
+                    {% else %}
+                        <div class="alert alert-warning">
+                            <i class="fas fa-exclamation-triangle"></i> La double authentification est <strong>désactivée</strong> sur votre compte.
+                        </div>
+
+                        <div class="card bg-light mb-3">
+                            <div class="card-body">
+                                <h5><i class="fas fa-shield-alt"></i> Pourquoi activer la 2FA ?</h5>
+                                <ul class="mb-0">
+                                    <li>Protection supplémentaire contre les accès non autorisés</li>
+                                    <li>Nécessite votre téléphone en plus de votre mot de passe</li>
+                                    <li>Recommandé pour protéger votre compte</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <a href="{{ path('app_2fa_setup') }}" class="btn btn-success w-100">
+                            <i class="fas fa-plus-circle"></i> Activer la double authentification
+                        </a>
+                    {% endif %}
+
+                    <div class="text-center mt-3">
+                        <a href="{{ path('main') }}" class="text-muted">
+                            <i class="fas fa-arrow-left"></i> Retour à l'accueil
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

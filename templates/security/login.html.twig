@@ -1,5 +1,7 @@
 {% extends 'base.html.twig' %}
 
+{% block title %}{{ 'login.title'|trans }} - Minouverse{% endblock %}
+
 {% block stylesheets %}
     {{ parent() }}
     <link rel="stylesheet" href="{{ asset('bootstrap/css/login.css') }}">
@@ -9,7 +11,14 @@
     <div class="container mt-5">
         <div class="row justify-content-center">
             <div class="col-md-6">
-                <h1 class="text-center mb-4">Connexion</h1>
+                <h1 class="text-center mb-4">{{ 'login.title'|trans }}</h1>
+
+                {% if ban_message %}
+                    <div class="alert alert-danger text-center">
+                        <i class="bi bi-ban me-2"></i>
+                        {{ ban_message }}
+                    </div>
+                {% endif %}
 
                 {% if error %}
                     <div class="alert alert-danger text-center">
@@ -23,7 +32,7 @@
                         <form action="{{ path('app_login') }}" method="post">
                             <!-- Email -->
                             <div class="mb-3">
-                                <label for="email" class="form-label">Email</label>
+                                <label for="email" class="form-label">{{ 'login.email_label'|trans }}</label>
                                 <input 
                                     type="text" 
                                     id="email" 
@@ -31,26 +40,30 @@
                                     class="form-control" 
                                     value="{{ last_username|default('') }}" 
                                     required
-                                    placeholder="Entrez votre email">
+                                    placeholder="{{ 'login.email_label'|trans }}">
                             </div>
 
                             <!-- MDP -->
                             <div class="mb-3">
-                                <label for="password" class="form-label">Mot de passe</label>
+                                <label for="password" class="form-label">{{ 'login.password_label'|trans }}</label>
                                 <input 
                                     type="password" 
                                     id="password" 
                                     name="password" 
                                     class="form-control" 
                                     required
-                                    placeholder="Entrez votre mot de passe">
+                                    placeholder="{{ 'login.password_label'|trans }}">
                             </div>
 
                             <!-- Champ CSRF -->
                             <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
 
-                            <button type="submit" class="btn btn-primary w-100">Se connecter</button>
+                            <button type="submit" class="btn btn-primary w-100">{{ 'login.submit'|trans }}</button>
                         </form>
+                        
+                        <div class="text-center mt-3">
+                            <p class="text-muted">{{ 'login.no_account'|trans }} <a href="{{ path('app_register') }}">{{ 'login.register_here'|trans }}</a></p>
+                        </div>
                     </div>
                 </div>
             </div>

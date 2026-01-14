@@ -28,6 +28,7 @@ security:
                 username_parameter: email # Correspond au champ "email" dans le formulaire
                 password_parameter: password # Correspond au champ "password" dans le formulaire
                 default_target_path: main
+                success_handler: App\Security\TwoFactorAuthenticationSuccessHandler
                 
 
             # Configuration pour la déconnexion

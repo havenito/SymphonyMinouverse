@@ -5,29 +5,70 @@
     <link rel="stylesheet" href="{{ asset('bootstrap/css/post-show.css') }}">
 {% endblock %}
 
-{% block title %}{{ post.title }}{% endblock %}
+{% block title %}{{ post.getTranslatedTitle(app.request.locale) }}{% endblock %}
 
 {% block body %}
 <div class="container mt-5">
+    <!-- Hero Header for Post -->
+    <div class="post-header mb-5 p-5 rounded-3 shadow-lg fade-in" style="background: linear-gradient(135deg, #6c63ff 0%, #4ea8de 100%); color: white;">
+        <h1 class="display-4 fw-bold mb-3">{{ post.getTranslatedTitle(app.request.locale) }}</h1>
+        <div class="d-flex align-items-center gap-4 flex-wrap">
+            <span class="badge bg-white text-dark fs-6 px-3 py-2">
+                <i class="bi bi-calendar3 me-2"></i>{{ post.publishedAt|date('d/m/Y') }}
+            </span>
+            <span class="badge bg-white text-dark fs-6 px-3 py-2">
+                <i class="bi bi-tag-fill me-2"></i>{{ post.category.getTranslatedName(app.request.locale) }}
+            </span>
+            {% if app.user %}
+                <button class="btn btn-light favorite-btn-header" 
+                        id="favoriteBtn"
+                        data-post-id="{{ post.id }}"
+                        onclick="toggleFavorite({{ post.id }})">
+                    <i class="bi bi-heart" id="favoriteIcon"></i>
+                    <span id="favoriteText">Ajouter aux favoris</span>
+                </button>
+            {% endif %}
+            <span class="badge bg-light text-dark fs-6 px-3 py-2" id="favoriteCount">
+                <i class="bi bi-heart-fill text-danger me-2"></i>
+                <span id="favCount">0</span> favoris
+            </span>
+        </div>
+    </div>
+    
     <div class="post-container d-flex">
         <div class="text-content">
-            <h1>{{ post.title }}</h1>
-            <p><strong>Publié le :</strong> {{ post.publishedAt|date('d/m/Y') }}</p>
-            <p><strong>Catégorie :</strong> <span class="badge bg-info">{{ post.category.name }}</span></p>
-            <p>{{ post.content }}</p>
+            <div class="content-text fs-5 lh-lg">
+                {{ post.getTranslatedContent(app.request.locale) }}
+            </div>
         </div>
         <div class="image-content">
             {% if post.picture %}
-                <img src="{{ asset('uploads/posts/' ~ post.picture) }}" class="post-image" alt="Image de {{ post.title }}">
+                <img src="{{ asset('uploads/posts/' ~ post.picture) }}" class="post-image rounded-3 shadow-lg" alt="Image de {{ post.getTranslatedTitle(app.request.locale) }}">
             {% else %}
-                <p><strong>Image de l'article :</strong> <span class="text-muted">Pas d'image disponible</span></p>
+                <div class="d-flex align-items-center justify-content-center bg-gradient-primary text-white rounded-3" style="height: 300px;">
+                    <i class="bi bi-image-fill fs-1"></i>
+                </div>
             {% endif %}
         </div>
     </div>
 
     <div class="comments-section mt-5">
-        <h3 class="border-bottom pb-2 mb-4">Commentaires</h3>
-        {% for comment in post.comments %}
+        <h3 class="border-bottom pb-2 mb-4">
+            <i class="bi bi-chat-dots me-2"></i>
+            {{ 'post.show.comments'|trans }} ({{ comments|length }})
+        </h3>
+        
+        {% if app.user and 'ROLE_USER' in app.user.roles %}
+            <div class="alert alert-info mb-4">
+                <i class="bi bi-info-circle me-2"></i>
+                <strong>Info :</strong> {{ 'post.show.report_info'|trans }}
+                <span class="badge bg-warning text-dark">
+                    <i class="bi bi-flag"></i> {{ 'post.show.report'|trans }}
+                </span>
+            </div>
+        {% endif %}
+        
+        {% for comment in comments %}
             <div class="card mb-3 shadow-sm">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center mb-2">
@@ -35,26 +76,46 @@
                         <small class="text-muted">{{ comment.createdAt|date('d/m/Y H:i') }}</small>
                     </div>
                     <p class="card-text">{{ comment.content }}</p>
-                    {% if app.user and 'ROLE_ADMIN' in app.user.roles %}
-                        <form action="{{ path('post_delete_comment', {commentId: comment.id}) }}" method="post" style="display:inline;">
-                            <button type="submit" class="btn btn-danger btn-sm hover-illuminate"
-                                onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce commentaire ?')">Supprimer</button>
-                        </form>
-                    {% endif %}
+                    
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <!-- Bouton de signalement pour les utilisateurs connectés et approuvés -->
+                            {% if app.user and 'ROLE_USER' in app.user.roles and comment.user != app.user %}
+                                <a href="{{ path('comment_report', {id: comment.id}) }}" 
+                                   class="btn btn-outline-warning btn-sm me-2">
+                                    <i class="bi bi-flag me-1"></i>
+                                    {{ 'post.show.report'|trans }}
+                                </a>
+                            {% endif %}
+                        </div>
+                        
+                        <div>
+                            <!-- Actions admin -->
+                            {% if app.user and 'ROLE_ADMIN' in app.user.roles %}
+                                <form action="{{ path('post_delete_comment', {commentId: comment.id}) }}" method="post" style="display:inline;">
+                                    <button type="submit" class="btn btn-danger btn-sm hover-illuminate"
+                                        onclick="return confirm('{{ 'button.delete'|trans }} ?')">
+                                        <i class="bi bi-trash me-1"></i>
+                                        {{ 'button.delete'|trans }}
+                                    </button>
+                                </form>
+                            {% endif %}
+                        </div>
+                    </div>
                 </div>
             </div>
         {% else %}
-            <p class="text-muted">Aucun commentaire pour cet article.</p>
+            <p class="text-muted">{{ 'post.show.no_comments_article'|trans }}</p>
         {% endfor %}
 
         {% if app.user and 'ROLE_ADMIN' in app.user.roles %}
             <div class="alert alert-info mt-4">
-                Vous êtes administrateur, vous n'avez pas besoin d'ajouter de commentaires.
+                {{ 'post.show.admin_no_comment'|trans }}
             </div>
         {% elseif app.user and 'ROLE_USER' in app.user.roles %}
             <div class="card mt-4 shadow-sm">
                 <div class="card-header bg-primary text-white">
-                    Ajouter un commentaire
+                    {{ 'post.show.add_comment_title'|trans }}
                 </div>
                 <div class="card-body">
                     {{ form_start(commentForm, { 'attr': { 'class': 'needs-validation' } }) }}
@@ -79,4 +140,108 @@
         {% endif %}
     </div>
 </div>
+{% endblock %}
+
+{% block javascripts %}
+<script>
+    // Favoris functionality
+    let isFavorited = {{ isFavorite ? 'true' : 'false' }};
+    let currentFavoriteCount = {{ favoriteCount }};
+
+    // Load current state on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        updateFavoriteButton();
+    });
+
+    function toggleFavorite(postId) {
+        fetch(`/favorite/toggle/${postId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                isFavorited = data.action === 'added';
+                currentFavoriteCount = data.count;
+                updateFavoriteButton();
+                showNotification(data.message, 'success');
+            } else {
+                showNotification(data.message || 'Une erreur est survenue', 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showNotification('Erreur de connexion', 'error');
+        });
+    }
+
+    function updateFavoriteButton() {
+        const icon = document.getElementById('favoriteIcon');
+        const text = document.getElementById('favoriteText');
+        const btn = document.getElementById('favoriteBtn');
+        const countSpan = document.getElementById('favCount');
+
+        if (btn) {
+            if (isFavorited) {
+                icon.className = 'bi bi-heart-fill text-danger';
+                text.textContent = 'Retirer des favoris';
+                btn.classList.add('active');
+            } else {
+                icon.className = 'bi bi-heart';
+                text.textContent = 'Ajouter aux favoris';
+                btn.classList.remove('active');
+            }
+        }
+
+        if (countSpan) {
+            countSpan.textContent = currentFavoriteCount;
+        }
+    }
+
+    function showNotification(message, type) {
+        const toast = document.createElement('div');
+        toast.className = `alert alert-${type === 'success' ? 'success' : 'danger'} position-fixed top-0 end-0 m-3`;
+        toast.style.zIndex = '9999';
+        toast.innerHTML = `
+            <i class="bi bi-${type === 'success' ? 'check-circle' : 'exclamation-circle'} me-2"></i>
+            ${message}
+        `;
+        document.body.appendChild(toast);
+        
+        setTimeout(() => {
+            toast.remove();
+        }, 3000);
+    }
+</script>
+
+<style>
+    .favorite-btn-header {
+        transition: all 0.3s ease;
+        border: 2px solid rgba(255, 255, 255, 0.5);
+        font-weight: 600;
+    }
+
+    .favorite-btn-header:hover {
+        transform: scale(1.05);
+        border-color: white;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .favorite-btn-header.active {
+        background-color: rgba(255, 255, 255, 0.2);
+        border-color: white;
+    }
+
+    .favorite-btn-header i {
+        font-size: 1.2rem;
+        transition: transform 0.3s ease;
+    }
+
+    .favorite-btn-header:hover i {
+        transform: scale(1.2);
+    }
+</style>
 {% endblock %}

@@ -12,6 +12,7 @@ use App\Entity\Comment;
 use App\Form\PostType;
 use App\Form\CommentType;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use App\Repository\FavoriteRepository;
 
 
 class PostController extends AbstractController
@@ -86,11 +87,19 @@ class PostController extends AbstractController
     }
 
     #[Route('/post/{id}', name: 'post_show',)]
-    public function show(Request $request, EntityManagerInterface $entityManager, ?Post $post): Response
+    public function show(Request $request, EntityManagerInterface $entityManager, FavoriteRepository $favoriteRepository, ?Post $post): Response
     {
         if (!$post) {
             throw $this->createNotFoundException('Article introuvable.');
         }
+
+        // Get favorite data
+        $isFavorite = false;
+        $user = $this->getUser();
+        if ($user) {
+            $isFavorite = $favoriteRepository->isFavorite($user, $post);
+        }
+        $favoriteCount = $favoriteRepository->countFavorites($post);
 
         $comment = new Comment();
         $commentForm = $this->createForm(CommentType::class, $comment);
@@ -133,15 +142,32 @@ class PostController extends AbstractController
             return $this->redirectToRoute('post_show', ['id' => $post->getId()]);
         }
 
-        foreach ($post->getComments() as $comment) {
+        // Filtrer les commentaires selon le rôle de l'utilisateur
+        $comments = [];
+        if ($this->isGranted('ROLE_ADMIN')) {
+            // Les admins voient tous les commentaires
+            $comments = $post->getComments()->toArray();
+        } else {
+            // Les utilisateurs normaux ne voient que les commentaires validés
+            foreach ($post->getComments() as $comment) {
+                if ($comment->getStatus() === 'validé' || $comment->getStatus() === null) {
+                    $comments[] = $comment;
+                }
+            }
+        }
+
+        foreach ($comments as $comment) {
             $replyForm = $this->createForm(CommentType::class, new Comment());
             $replyForms[$comment->getId()] = $replyForm->createView(); 
         }
     
         return $this->render('post/show.html.twig', [
             'post' => $post,
+            'comments' => $comments,
             'commentForm' => $commentForm->createView(),
             'replyForms' => $replyForms,
+            'isFavorite' => $isFavorite,
+            'favoriteCount' => $favoriteCount,
         ]);
     }
 

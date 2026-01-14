@@ -22,6 +22,12 @@ class Post
     #[ORM\Column(type: Types::TEXT)]
     private ?string $content = null;
 
+    #[ORM\Column(length: 200, nullable: true)]
+    private ?string $titleEn = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $contentEn = null;
+
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $publishedAt = null;
 
@@ -29,6 +35,7 @@ class Post
     private ?string $picture = null;
 
     #[ORM\ManyToOne(inversedBy: 'posts')]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
     private ?User $user = null;
 
     #[ORM\ManyToOne(inversedBy: 'posts')]
@@ -150,5 +157,43 @@ class Post
         }
 
         return $this;
+    }
+
+    public function getTitleEn(): ?string
+    {
+        return $this->titleEn;
+    }
+
+    public function setTitleEn(?string $titleEn): static
+    {
+        $this->titleEn = $titleEn;
+        return $this;
+    }
+
+    public function getContentEn(): ?string
+    {
+        return $this->contentEn;
+    }
+
+    public function setContentEn(?string $contentEn): static
+    {
+        $this->contentEn = $contentEn;
+        return $this;
+    }
+
+    public function getTranslatedTitle(string $locale = 'fr'): string
+    {
+        if ($locale === 'en' && $this->titleEn) {
+            return $this->titleEn;
+        }
+        return $this->title ?? '';
+    }
+
+    public function getTranslatedContent(string $locale = 'fr'): string
+    {
+        if ($locale === 'en' && $this->contentEn) {
+            return $this->contentEn;
+        }
+        return $this->content ?? '';
     }
 }

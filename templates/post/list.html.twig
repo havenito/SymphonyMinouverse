@@ -3,18 +3,80 @@
 {% block stylesheets %}
     {{ parent() }}
     <link rel="stylesheet" href="{{ asset('bootstrap/css/post-list.css') }}">
+    <style>
+        /* Pagination Styles */
+        .pagination-modern {
+            display: flex;
+            gap: 0.5rem;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .page-item {
+            list-style: none;
+        }
+        
+        .page-link-modern {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 45px;
+            height: 45px;
+            padding: 0.5rem 1rem;
+            border-radius: 12px;
+            background: white;
+            color: #667eea;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: 2px solid #e5e7eb;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+        
+        .page-link-modern:hover {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: transparent;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+        
+        .page-item.active .page-link-modern {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: transparent;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .page-item.disabled .page-link-modern {
+            background: transparent;
+            border: none;
+            color: #9ca3af;
+            cursor: default;
+            box-shadow: none;
+        }
+        
+        .page-item.disabled .page-link-modern:hover {
+            transform: none;
+            box-shadow: none;
+        }
+    </style>
 {% endblock %}
 
 {% block body %}
 <div class="container mt-5">
-    <h1 class="text-center mb-4 text-dark fw-bold" style="animation: fadeInAnimation 1.5s ease-in-out;">
-        Liste des articles
-    </h1>
+    <div class="text-center mb-5 scroll-reveal">
+                <h1 class="fw-bold text-center mb-4 animate-fade-in">
+            {{ 'post.list.title'|trans }}
+        </h1>
+        <p class="lead text-muted">{{ 'home.recent_articles.subtitle'|trans }}</p>
+    </div>
 
     {% if app.user and 'ROLE_ADMIN' in app.user.roles %}
-        <div class="text-center mb-4">
-            <a href="{{ path('post_create') }}" class="btn btn-primary btn-lg px-4 py-2 hover-illuminate fw-bold">
-                Créer un nouvel article
+        <div class="text-center mb-5 fade-in">
+            <a href="{{ path('post_create') }}" class="btn btn-primary btn-lg px-5 py-3 hover-illuminate fw-bold">
+                <i class="bi bi-plus-circle-fill me-2"></i>{{ 'post.list.create_post'|trans }}
             </a>
         </div>
     {% endif %}
@@ -24,60 +86,92 @@
             <div class="col-md-6 col-lg-4 fade-in">
                 <div class="card shadow-lg rounded-3 h-100 transition-shadow">
                     {% if post.picture %}
-                        <img src="{{ asset('uploads/posts/' ~ post.picture) }}" class="card-img-top" alt="Image de {{ post.title }}" style="max-height: 200px; object-fit: cover;">
+                        <div style="overflow: hidden; height: 250px;">
+                            <img src="{{ asset('uploads/posts/' ~ post.picture) }}" 
+                                 class="card-img-top" 
+                                 alt="Image de {{ post.getTranslatedTitle(app.request.locale) }}" 
+                                 style="object-fit: cover; width: 100%; height: 100%;">
+                        </div>
                     {% else %}
-                        <p class="text-center text-muted py-5">Pas d'image disponible</p>
+                        <div class="d-flex align-items-center justify-content-center bg-gradient-primary text-white" style="height: 250px;">
+                            <i class="bi bi-image-fill fs-1"></i>
+                        </div>
                     {% endif %}
                     <div class="card-body d-flex flex-column">
-                        <h5 class="card-title fw-bold text-dark">{{ post.title }}</h5>
-                        <p class="card-text text-muted">{{ post.content|slice(0, 100) }}...</p>
-                        <div class="mt-auto">
-                            <a href="{{ path('post_show', {id: post.id}) }}" class="btn btn-primary w-100 hover-illuminate">
-                                Lire la suite
-                            </a>
-                        </div>
+                        <h5 class="card-title fw-bold text-dark mb-3">{{ post.getTranslatedTitle(app.request.locale) }}</h5>
+                        <p class="card-text text-muted">{{ post.getTranslatedContent(app.request.locale)|slice(0, 100) }}...</p>
                     </div>
                     <div class="card-footer bg-light text-muted">
-                        <small>Publié le : {{ post.publishedAt ? post.publishedAt|date('d/m/Y à H:i') : 'Date non définie' }}</small>
-                        <br>
-                        <small>Catégorie : {{ post.category.name }}</small>
-                    </div>
-
-                    {% if app.user and 'ROLE_ADMIN' in app.user.roles %}
-                        <div class="card-footer text-end">
-                            <form action="{{ path('post_delete', {id: post.id}) }}" method="post" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet article ?');">
-                                <button type="submit" class="btn btn-danger btn-sm">Supprimer</button>
-                            </form>
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <small>
+                                <i class="bi bi-calendar3 me-1"></i>
+                                {{ post.publishedAt ? post.publishedAt|date('d/m/Y') : 'Non défini' }}
+                            </small>
+                            <span class="badge" style="background: linear-gradient(135deg, #ff6584 0%, #ffa94d 100%); color: white;">
+                                <i class="bi bi-tag-fill me-1"></i>{{ post.category.getTranslatedName(app.request.locale) }}
+                            </span>
                         </div>
-                    {% endif %}
+                        
+                        <div class="d-flex gap-2">
+                            <a href="{{ path('post_show', {id: post.id}) }}" class="btn btn-primary btn-sm flex-fill">
+                                <i class="bi bi-eye-fill me-1"></i>{{ 'button.view'|trans }}
+                            </a>
+                            {% if app.user and 'ROLE_ADMIN' in app.user.roles %}
+                                <a href="{{ path('post_edit', {id: post.id}) }}" class="btn btn-warning btn-sm">
+                                    <i class="bi bi-pencil-fill me-1"></i>{{ 'button.modify'|trans }}
+                                </a>
+                                <form action="{{ path('post_delete', {id: post.id}) }}" method="post" onsubmit="return confirm('{{ 'button.delete'|trans }} ?');" class="d-inline">
+                                    <button type="submit" class="btn btn-danger btn-sm">
+                                        <i class="bi bi-trash-fill"></i>
+                                    </button>
+                                </form>
+                            {% endif %}
+                        </div>
+                    </div>
                 </div>
             </div>
         {% else %}
-            <p class="text-center text-muted">Aucun article disponible pour le moment.</p>
+            <div class="col-12">
+                <div class="alert alert-info text-center py-5" role="alert">
+                    <i class="bi bi-info-circle-fill fs-1 d-block mb-3"></i>
+                    <h4>{{ 'home.recent_articles.no_articles'|trans }}</h4>
+                    <p class="mb-0">{{ 'home.recent_articles.no_articles_desc'|trans }}</p>
+                </div>
+            </div>
         {% endfor %}
     </div>
 
-    <div class="pagination-container d-flex justify-content-center mt-4">
-        <nav aria-label="Pagination">
+    <div class="pagination-container d-flex justify-content-center mt-5 scroll-reveal">
+        <nav aria-label="Pagination des articles">
             <ul class="pagination-modern">
                 {% if currentPage > 1 %}
                     <li class="page-item">
                         <a href="{{ path('post_list', {page: currentPage - 1}) }}" class="page-link-modern" aria-label="Précédent">
-                            &laquo;
+                            <i class="bi bi-chevron-left"></i>
                         </a>
                     </li>
                 {% endif %}
 
                 {% for i in 1..totalPages %}
-                    <li class="page-item {% if i == currentPage %}active{% endif %}">
-                        <a href="{{ path('post_list', {page: i}) }}" class="page-link-modern">{{ i }}</a>
-                    </li>
+                    {% if i == currentPage %}
+                        <li class="page-item active">
+                            <span class="page-link-modern">{{ i }}</span>
+                        </li>
+                    {% elseif i == 1 or i == totalPages or (i >= currentPage - 1 and i <= currentPage + 1) %}
+                        <li class="page-item">
+                            <a href="{{ path('post_list', {page: i}) }}" class="page-link-modern">{{ i }}</a>
+                        </li>
+                    {% elseif i == currentPage - 2 or i == currentPage + 2 %}
+                        <li class="page-item disabled">
+                            <span class="page-link-modern">...</span>
+                        </li>
+                    {% endif %}
                 {% endfor %}
 
                 {% if currentPage < totalPages %}
                     <li class="page-item">
                         <a href="{{ path('post_list', {page: currentPage + 1}) }}" class="page-link-modern" aria-label="Suivant">
-                            &raquo;
+                            <i class="bi bi-chevron-right"></i>
                         </a>
                     </li>
                 {% endif %}
@@ -85,19 +179,4 @@
         </nav>
     </div>
 </div>
-
-<footer class="text-center py-4 bg-light mt-5 border-top" style="background-color: #6c63ff; color: white;">
-    <p class="text-muted mb-0">&copy; {{ "now"|date("Y") }} Mon Blog Moderne. Tous droits réservés.</p>
-    <div>
-        <a href="https://www.instagram.com/enzo_martzz/" target="_blank" class="text-black mx-2">
-            <i class="fab fa-instagram" style="font-size: 24px;"></i>
-        </a>
-        <a href="https://www.tiktok.com/@enzo_martz" target="_blank" class="text-black mx-2">
-            <i class="fab fa-tiktok" style="font-size: 24px;"></i>
-        </a>
-        <a href="https://github.com/havenito/Blog" target="_blank" class="text-black mx-2">
-            <i class="fab fa-github" style="font-size: 24px;"></i>
-        </a>
-    </div>
-</footer>
 {% endblock %}

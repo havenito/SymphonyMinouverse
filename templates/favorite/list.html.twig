@@ -1,0 +1,152 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mes Favoris{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="display-5">
+                    <i class="bi bi-heart-fill text-danger"></i> Mes Articles Favoris
+                </h1>
+                <a href="{{ path('main') }}" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left"></i> Retour à l'accueil
+                </a>
+            </div>
+
+            {% if favoritePosts is empty %}
+                <div class="alert alert-info text-center py-5">
+                    <i class="bi bi-heart" style="font-size: 3rem;"></i>
+                    <h3 class="mt-3">Aucun article favori</h3>
+                    <p class="text-muted">Vous n'avez pas encore ajouté d'articles à vos favoris.</p>
+                    <a href="{{ path('post_list') }}" class="btn btn-primary mt-3">
+                        <i class="bi bi-search"></i> Découvrir des articles
+                    </a>
+                </div>
+            {% else %}
+                <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+                    {% for post in favoritePosts %}
+                        <div class="col">
+                            <div class="card h-100 shadow-sm hover-card">
+                                {% if post.picture %}
+                                    <img src="{{ asset('uploads/posts/' ~ post.picture) }}" 
+                                         class="card-img-top" 
+                                         alt="{{ post.getTranslatedTitle(app.request.locale) }}"
+                                         style="height: 200px; object-fit: cover;">
+                                {% else %}
+                                    <div class="card-img-top bg-gradient" 
+                                         style="height: 200px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                                    </div>
+                                {% endif %}
+
+                                <div class="card-body">
+                                    <h5 class="card-title">
+                                        <a href="{{ path('post_show', {id: post.id}) }}" 
+                                           class="text-decoration-none text-dark">
+                                            {{ post.getTranslatedTitle(app.request.locale) }}
+                                        </a>
+                                    </h5>
+
+                                    <p class="card-text text-muted small">
+                                        {{ post.getTranslatedContent(app.request.locale)|slice(0, 100) }}...
+                                    </p>
+
+                                    <div class="d-flex justify-content-between align-items-center mt-3">
+                                        <small class="text-muted">
+                                            <i class="bi bi-calendar"></i> 
+                                            {{ post.publishedAt|date('d/m/Y') }}
+                                        </small>
+                                        {% if post.category %}
+                                            <span class="badge bg-primary">
+                                                {{ post.category.getTranslatedName(app.request.locale) }}
+                                            </span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                                <div class="card-footer bg-transparent">
+                                    <div class="d-flex justify-content-between">
+                                        <a href="{{ path('post_show', {id: post.id}) }}" 
+                                           class="btn btn-sm btn-outline-primary">
+                                            <i class="bi bi-eye"></i> Lire
+                                        </a>
+                                        <button class="btn btn-sm btn-danger favorite-btn" 
+                                                data-post-id="{{ post.id }}"
+                                                onclick="toggleFavorite({{ post.id }}, this)">
+                                            <i class="bi bi-heart-fill"></i> Retirer
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <div class="text-center mt-4">
+                    <p class="text-muted">
+                        <i class="bi bi-info-circle"></i> 
+                        Vous avez {{ favoritePosts|length }} article(s) en favoris
+                    </p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<style>
+.hover-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hover-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+}
+</style>
+
+<script>
+function toggleFavorite(postId, button) {
+    fetch(`/favorite/toggle/${postId}`, {
+        method: 'POST',
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Retirer la carte de la page
+            button.closest('.col').remove();
+            
+            // Vérifier s'il reste des favoris
+            const remainingCards = document.querySelectorAll('.hover-card').length;
+            if (remainingCards === 0) {
+                location.reload();
+            }
+            
+            // Afficher un message
+            showNotification(data.message, 'success');
+        }
+    })
+    .catch(error => {
+        console.error('Erreur:', error);
+        showNotification('Une erreur est survenue', 'error');
+    });
+}
+
+function showNotification(message, type) {
+    const alertClass = type === 'success' ? 'alert-success' : 'alert-danger';
+    const alert = document.createElement('div');
+    alert.className = `alert ${alertClass} alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3`;
+    alert.style.zIndex = '9999';
+    alert.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    document.body.appendChild(alert);
+    
+    setTimeout(() => alert.remove(), 3000);
+}
+</script>
+{% endblock %}

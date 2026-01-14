@@ -1,0 +1,171 @@
+# Navbar
+nav.home: Home
+nav.articles: Articles
+nav.categories: Categories
+nav.contact: Contact
+nav.admin: Admin Panel
+nav.users: Users
+nav.reports: Reports
+nav.suggestions: Suggestions
+nav.logout: Logout
+nav.login: Login
+nav.register: Register
+nav.theme_toggle: Toggle theme
+
+# Footer
+footer.copyright: © 2025 My Modern Blog. All rights reserved.
+footer.follow: Follow me
+footer.contact: Contact
+footer.location: Paris, France
+footer.language: Language
+
+# Page Titles
+title.home: My Blog
+title.articles: Articles
+title.categories: Categories
+title.login: Login
+title.register: Register
+title.profile: Profile
+
+# Buttons
+button.read_more: Read more
+button.submit: Submit
+button.cancel: Cancel
+button.edit: Edit
+button.delete: Delete
+button.back: Back
+button.view: View
+button.modify: Edit
+button.create: Create
+
+# Forms
+form.email: Email
+form.password: Password
+form.confirm_password: Confirm password
+form.username: Username
+form.remember_me: Remember me
+
+# Messages
+message.welcome: Welcome
+message.error: An error occurred
+message.success: Operation successful
+message.no_articles: No articles available
+message.no_categories: No categories available
+
+# Categories
+category.all: All categories
+category.name: Category name
+
+# Posts
+post.by: By
+post.on: On
+post.comments: comments
+post.views: views
+
+# Admin
+admin.dashboard: Dashboard
+admin.manage: Manage
+
+# Dates
+date.today: Today
+date.yesterday: Yesterday
+
+# Home Page
+home.hero.title: Welcome to Minouverse
+home.hero.subtitle: Discover exciting articles, share your ideas and join a creative community
+home.hero.explore_articles: Explore Articles
+home.hero.view_categories: View Categories
+home.stats.articles_published: Published Articles
+home.stats.categories: Categories
+home.stats.active_members: Active Members
+home.recent_articles.title: Recent Articles
+home.recent_articles.subtitle: Discover our latest publications
+home.recent_articles.read_more: Read more
+home.recent_articles.published_soon: Coming soon
+home.recent_articles.no_articles: No articles available
+home.recent_articles.no_articles_desc: Check back later to discover our new content!
+home.categories.title: Popular Categories
+home.categories.subtitle: Explore topics that interest you
+home.categories.explore: Explore
+home.categories.default_desc: Discover all articles in this category
+
+# Post List
+post.list.title: All Articles
+post.list.search_placeholder: Search for an article...
+post.list.filter_category: Filter by category
+post.list.all_categories: All categories
+post.list.sort_by: Sort by
+post.list.most_recent: Most recent
+post.list.most_viewed: Most viewed
+post.list.no_posts: No articles found
+post.list.create_post: Create article
+
+# Post Show
+post.show.back_to_list: Back to articles
+post.show.written_by: Written by
+post.show.published_on: Published on
+post.show.views: views
+post.show.share: Share
+post.show.edit: Edit article
+post.show.delete: Delete article
+post.show.comments: Comments
+post.show.add_comment: Add a comment
+post.show.login_to_comment: Log in to comment
+post.show.submit_comment: Post comment
+post.show.no_comments: No comments yet
+post.show.be_first: Be the first to comment!
+post.show.report: Report
+post.show.report_info: You can report inappropriate comments by clicking on the button
+post.show.no_comments_article: No comments for this article.
+post.show.admin_no_comment: You are an administrator, you don't need to add comments.
+post.show.add_comment_title: Add a comment
+
+# Category List
+category.list.title: All Categories
+category.list.explore_category: Explore
+category.list.articles_count: articles
+category.list.suggest_category: Suggest a category
+category.list.create_category: Create category
+category.list.no_categories: No categories found
+category.list.create_first: Create your first category to get started!
+
+# Category Show
+category.show.back_to_categories: Back to categories
+category.show.articles_in_category: Articles in this category
+category.show.no_articles: No articles in this category
+category.show.no_articles_desc: Check out other categories or come back later
+category.show.deleted_author: Deleted author
+category.show.not_published: Not published
+category.show.read_article: Read article
+
+# Login
+login.title: Login
+login.email_label: Email address
+login.password_label: Password
+login.remember_me: Remember me
+login.submit: Sign in
+login.no_account: Don't have an account yet?
+login.register_here: Register here
+
+# Register
+register.title: Sign Up
+register.username_label: Username
+register.email_label: Email address
+register.password_label: Password
+register.password_placeholder: Choose a secure password
+register.confirm_password: Confirm password
+register.first_name: First name
+register.last_name: Last name
+register.profile_picture: Profile picture
+register.submit: Sign up
+register.already_account: Already have an account?
+register.login_here: Log in here
+
+# Two Factor Authentication
+2fa.menu: Two-factor authentication
+2fa.title: Two-factor authentication
+2fa.setup.title: Set up two-factor authentication (2FA)
+2fa.status.enabled: Two-factor authentication is enabled
+2fa.status.disabled: Two-factor authentication is disabled
+2fa.verify.title: Security verification
+2fa.verify.enter_code: Enter verification code

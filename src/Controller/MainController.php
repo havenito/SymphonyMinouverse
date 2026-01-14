@@ -10,6 +10,12 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class MainController extends AbstractController
 {
+    #[Route('/', name: 'app_home')]
+    public function home(): Response
+    {
+        return $this->redirectToRoute('main');
+    }
+
     #[Route('/main', name: 'main')]
     public function index(PostRepository $postRepository, CategoryRepository $categoryRepository): Response
     {

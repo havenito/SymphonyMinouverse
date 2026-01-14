@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Admin Routes</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-4">
+    <h1>Test des Routes Admin</h1>
+    
+    <div class="card">
+        <div class="card-body">
+            <h5>Informations de débogage :</h5>
+            <ul>
+                <li><strong>Utilisateur connecté :</strong> {{ app.user ? 'Oui' : 'Non' }}</li>
+                {% if app.user %}
+                    <li><strong>Email :</strong> {{ app.user.userIdentifier }}</li>
+                    <li><strong>Rôles :</strong> {{ app.user.roles|join(', ') }}</li>
+                    <li><strong>ROLE_ADMIN présent :</strong> {{ 'ROLE_ADMIN' in app.user.roles ? 'Oui' : 'Non' }}</li>
+                {% endif %}
+            </ul>
+            
+            <h5>Test des liens :</h5>
+            <div class="list-group">
+                <a href="{{ path('admin_users') }}" class="list-group-item list-group-item-action">
+                    Test route admin_users
+                </a>
+                <a href="{{ path('admin_reports') }}" class="list-group-item list-group-item-action">
+                    Test route admin_reports
+                </a>
+                <a href="{{ path('admin_category_suggestions') }}" class="list-group-item list-group-item-action">
+                    Test route admin_category_suggestions
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

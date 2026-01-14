@@ -3,8 +3,12 @@
 namespace App\Controller;
 
 use App\Entity\Category;
-use App\Form\CategoryType;
+use App\Entity\CategorySuggestion;
+use App\Entity\User;
+use App\Form\CategoryFormType;
+use App\Form\CategorySuggestionType;
 use App\Repository\CategoryRepository;
+use App\Repository\CategorySuggestionRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,12 +21,20 @@ class CategoryController extends AbstractController
 {
     // Liste des catégories
     #[Route('/categories', name: 'category_list')]
-    public function list(CategoryRepository $categoryRepository): Response
+    public function list(Request $request, CategoryRepository $categoryRepository): Response
     {
-        $categories = $categoryRepository->findAll();
+        $page = max(1, $request->query->getInt('page', 1));
+        $limit = 3; // 3 catégories par page
+        $offset = ($page - 1) * $limit;
+        
+        $totalCategories = $categoryRepository->count([]);
+        $categories = $categoryRepository->findBy([], ['name' => 'ASC'], $limit, $offset);
+        $totalPages = ceil($totalCategories / $limit);
 
         return $this->render('category/list.html.twig', [
             'categories' => $categories,
+            'currentPage' => $page,
+            'totalPages' => $totalPages,
         ]);
     }
 
@@ -52,7 +64,7 @@ class CategoryController extends AbstractController
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
         $category = new Category();
-        $form = $this->createForm(CategoryType::class, $category);
+        $form = $this->createForm(CategoryFormType::class, $category);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -98,5 +110,88 @@ class CategoryController extends AbstractController
         $this->addFlash('success', 'Catégorie supprimée avec succès.');
 
         return $this->redirectToRoute('category_list');
+    }
+
+    // Suggestion de nouvelle catégorie par les utilisateurs
+    #[Route('/category/suggest', name: 'category_suggest')]
+    public function suggest(Request $request, EntityManagerInterface $em): Response
+    {
+        // Vérifier que l'utilisateur est connecté et approuvé
+        $user = $this->getUser();
+        if (!$user instanceof User || !$user->getIsAccepted()) {
+            $this->addFlash('error', 'Vous devez être connecté et approuvé pour suggérer une catégorie.');
+            return $this->redirectToRoute('category_list');
+        }
+
+        $suggestion = new CategorySuggestion();
+        $suggestion->setSuggestedBy($user);
+
+        $form = $this->createForm(CategorySuggestionType::class, $suggestion);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em->persist($suggestion);
+            $em->flush();
+
+            $this->addFlash('success', 'Votre suggestion de catégorie a été envoyée. Elle sera examinée par les administrateurs.');
+            return $this->redirectToRoute('category_list');
+        }
+
+        return $this->render('category/suggest.html.twig', [
+            'form' => $form->createView()
+        ]);
+    }
+
+    // Liste des suggestions pour les admins
+    #[Route('/admin/category/suggestions', name: 'admin_category_suggestions')]
+    public function adminSuggestions(CategorySuggestionRepository $suggestionRepository): Response
+    {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
+        $pendingSuggestions = $suggestionRepository->findPendingSuggestions();
+
+        return $this->render('admin/category_suggestions.html.twig', [
+            'suggestions' => $pendingSuggestions
+        ]);
+    }
+
+    // Approuver une suggestion de catégorie
+    #[Route('/admin/category/suggestion/{id}/approve', name: 'admin_category_suggestion_approve')]
+    public function approveSuggestion(CategorySuggestion $suggestion, EntityManagerInterface $em): Response
+    {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
+        // Créer la nouvelle catégorie
+        $category = new Category();
+        $category->setName($suggestion->getName());
+        $category->setDescription($suggestion->getDescription());
+
+        $em->persist($category);
+
+        // Marquer la suggestion comme approuvée
+        $suggestion->setStatus('approved');
+        $suggestion->setReviewedBy($this->getUser());
+        $suggestion->setReviewedAt(new \DateTime());
+
+        $em->flush();
+
+        $this->addFlash('success', 'La suggestion de catégorie a été approuvée et la catégorie créée.');
+        return $this->redirectToRoute('admin_category_suggestions');
+    }
+
+    // Rejeter une suggestion de catégorie
+    #[Route('/admin/category/suggestion/{id}/reject', name: 'admin_category_suggestion_reject')]
+    public function rejectSuggestion(CategorySuggestion $suggestion, EntityManagerInterface $em): Response
+    {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
+        $suggestion->setStatus('rejected');
+        $suggestion->setReviewedBy($this->getUser());
+        $suggestion->setReviewedAt(new \DateTime());
+
+        $em->flush();
+
+        $this->addFlash('info', 'La suggestion de catégorie a été rejetée.');
+        return $this->redirectToRoute('admin_category_suggestions');
     }
 }

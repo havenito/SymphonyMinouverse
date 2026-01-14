@@ -1,0 +1,69 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Suggestions de Catégories - Admin{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="fw-bold">
+            <i class="bi bi-lightbulb me-2"></i>
+            Suggestions de Catégories
+        </h1>
+        <a href="{{ path('admin_users') }}" class="btn btn-secondary">
+            <i class="bi bi-arrow-left me-1"></i>
+            Retour à la gestion
+        </a>
+    </div>
+
+    {% if suggestions %}
+        <div class="row">
+            {% for suggestion in suggestions %}
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-header bg-light">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0 fw-bold">{{ suggestion.name }}</h5>
+                                <span class="badge bg-warning">{{ suggestion.status }}</span>
+                            </div>
+                            <small class="text-muted">
+                                Proposé par <strong>{{ suggestion.suggestedBy.firstName }} {{ suggestion.suggestedBy.lastName }}</strong>
+                                le {{ suggestion.suggestedAt|date('d/m/Y H:i') }}
+                            </small>
+                        </div>
+                        <div class="card-body">
+                            {% if suggestion.description %}
+                                <p class="card-text">{{ suggestion.description }}</p>
+                            {% else %}
+                                <p class="card-text text-muted"><em>Aucune description fournie</em></p>
+                            {% endif %}
+                        </div>
+                        <div class="card-footer bg-transparent">
+                            <div class="d-flex gap-2">
+                                <form method="post" action="{{ path('admin_category_suggestion_approve', {id: suggestion.id}) }}" class="flex-fill">
+                                    <button type="submit" class="btn btn-success w-100" 
+                                            onclick="return confirm('Approuver cette suggestion de catégorie ?')">
+                                        <i class="bi bi-check-circle me-1"></i>
+                                        Approuver
+                                    </button>
+                                </form>
+                                <form method="post" action="{{ path('admin_category_suggestion_reject', {id: suggestion.id}) }}" class="flex-fill">
+                                    <button type="submit" class="btn btn-danger w-100"
+                                            onclick="return confirm('Rejeter cette suggestion de catégorie ?')">
+                                        <i class="bi bi-x-circle me-1"></i>
+                                        Rejeter
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-info text-center">
+            <i class="bi bi-info-circle me-2"></i>
+            Aucune suggestion de catégorie en attente.
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

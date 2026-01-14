@@ -21,12 +21,22 @@ class PostType extends AbstractType
     {
         $builder
         ->add('title', TextType::class, [
-            'label' => 'Titre de l\'article',
+            'label' => 'Titre de l\'article (FR)',
             'attr' => ['class' => 'form-control']
         ])
         ->add('content', TextareaType::class, [
-            'label' => 'Contenu de l\'article',
-            'attr' => ['class' => 'form-control']
+            'label' => 'Contenu de l\'article (FR)',
+            'attr' => ['class' => 'form-control', 'rows' => 6]
+        ])
+        ->add('titleEn', TextType::class, [
+            'label' => 'Titre de l\'article (EN)',
+            'required' => false,
+            'attr' => ['class' => 'form-control', 'placeholder' => 'English title']
+        ])
+        ->add('contentEn', TextareaType::class, [
+            'label' => 'Contenu de l\'article (EN)',
+            'required' => false,
+            'attr' => ['class' => 'form-control', 'rows' => 6, 'placeholder' => 'English content']
         ])
         ->add('category', EntityType::class, [
             'class' => Category::class,
@@ -37,6 +47,7 @@ class PostType extends AbstractType
         ->add('picture', FileType::class, [
             'label' => 'Image de l\'article',
             'required' => false,
+            'mapped' => false, // Ne pas mapper directement avec l'entité
             'attr' => ['class' => 'form-control'],
             'constraints' => [
                 new AssertImage([

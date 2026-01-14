@@ -1,0 +1,115 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Configurer la double authentification{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0"><i class="fas fa-shield-alt"></i> Configurer la double authentification (2FA)</h3>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i> La double authentification ajoute une couche de sécurité supplémentaire à votre compte admin.
+                    </div>
+
+                    <h4 class="mt-4 mb-3"><i class="fas fa-mobile-alt"></i> Étape 1 : Scanner le QR Code</h4>
+                    <p>Utilisez une application d'authentification comme <strong>Google Authenticator</strong>, <strong>Microsoft Authenticator</strong> ou <strong>Authy</strong>.</p>
+                    
+                    <div class="text-center mb-4">
+                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data={{ qrCodeUrl|url_encode }}" 
+                             alt="QR Code 2FA" 
+                             class="border border-2 p-3 bg-white">
+                    </div>
+
+                    <div class="alert alert-secondary">
+                        <strong>Ou entrez manuellement ce code :</strong>
+                        <div class="input-group mt-2">
+                            <input type="text" class="form-control font-monospace" value="{{ secret }}" readonly>
+                            <button class="btn btn-outline-secondary" type="button" onclick="copySecret()">
+                                <i class="fas fa-copy"></i> Copier
+                            </button>
+                        </div>
+                    </div>
+
+                    <h4 class="mt-4 mb-3"><i class="fas fa-key"></i> Étape 2 : Sauvegarder les codes de récupération</h4>
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle"></i> <strong>Important :</strong> Conservez ces codes en lieu sûr ! Ils vous permettront de vous connecter si vous perdez l'accès à votre téléphone.
+                    </div>
+
+                    <div class="card bg-light mb-4">
+                        <div class="card-body">
+                            <div class="row">
+                                {% for code in backupCodes %}
+                                    <div class="col-md-6 mb-2">
+                                        <code class="fs-5">{{ code }}</code>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                            <button class="btn btn-sm btn-secondary mt-3" onclick="downloadBackupCodes()">
+                                <i class="fas fa-download"></i> Télécharger les codes
+                            </button>
+                        </div>
+                    </div>
+
+                    <h4 class="mt-4 mb-3"><i class="fas fa-check-circle"></i> Étape 3 : Vérifier et activer</h4>
+                    <p>Entrez le code à 6 chiffres affiché dans votre application :</p>
+
+                    <form method="post" action="{{ path('app_2fa_enable') }}">
+                        <div class="mb-3">
+                            <input type="text" 
+                                   class="form-control form-control-lg text-center" 
+                                   name="code" 
+                                   placeholder="000000" 
+                                   pattern="[0-9]{6}" 
+                                   maxlength="6" 
+                                   required 
+                                   autofocus>
+                        </div>
+                        <input type="hidden" name="backup_codes" value="{{ backupCodes|json_encode }}">
+                        <input type="hidden" name="_csrf_token" value="{{ csrf_token('2fa-enable') }}">
+                        <button type="submit" class="btn btn-success btn-lg w-100">
+                            <i class="fas fa-shield-alt"></i> Activer la double authentification
+                        </button>
+                    </form>
+
+                    <div class="text-center mt-3">
+                        <a href="{{ path('app_2fa_status') }}" class="text-muted">
+                            <i class="fas fa-arrow-left"></i> Retour
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function copySecret() {
+    const input = document.querySelector('input[value="{{ secret }}"]');
+    input.select();
+    document.execCommand('copy');
+    alert('Code copié dans le presse-papiers !');
+}
+
+function downloadBackupCodes() {
+    const codes = {{ backupCodes|json_encode|raw }};
+    const text = 'Codes de récupération BlogMinouverse\n' +
+                 '=====================================\n\n' +
+                 codes.join('\n') +
+                 '\n\nConservez ces codes en lieu sûr !';
+    
+    const blob = new Blob([text], { type: 'text/plain' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'backup-codes-blogminouverse.txt';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
+}
+</script>
+{% endblock %}

@@ -31,7 +31,7 @@
 
 .comments-section h3 {
     font-size: 1.5rem;
-    color: #343a40;
+    /* Color removed - handled by dark-mode.css */
     border-bottom: 2px solid #007bff;
     padding-bottom: 10px;
 }
@@ -41,9 +41,7 @@
     margin-bottom: 1.5rem;
 }
 
-.card-title.text-primary {
-    color: #007bff;
-}
+/* Card title color removed - handled by dark-mode.css */
 
 .hover-illuminate:hover {
     box-shadow: 0 0 10px rgba(0, 123, 255, 0.6);

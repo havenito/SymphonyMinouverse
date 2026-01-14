@@ -5,9 +5,12 @@ namespace App\Controller;
 use App\Entity\User; 
 use App\Entity\Post;
 use App\Entity\Comment;
+use App\Entity\CommentReport;
 use App\Form\CommentType;
+use App\Form\CommentReportType;
 use App\Repository\CommentRepository;
 use App\Repository\PostRepository;
+use App\Repository\CommentReportRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -21,15 +24,18 @@ class CommentController extends AbstractController
     private $entityManager;
     private $commentRepository;
     private $postRepository;
+    private $commentReportRepository;
 
     public function __construct(
         EntityManagerInterface $entityManager,
         CommentRepository $commentRepository,
-        PostRepository $postRepository
+        PostRepository $postRepository,
+        CommentReportRepository $commentReportRepository
     ) {
         $this->entityManager = $entityManager;
         $this->commentRepository = $commentRepository;
         $this->postRepository = $postRepository;
+        $this->commentReportRepository = $commentReportRepository;
     }
 
     // Afficher les commentaires d'un article
@@ -131,6 +137,49 @@ class CommentController extends AbstractController
         $this->addFlash('success', 'Le commentaire a été validé avec succès.');
 
         return $this->redirectToRoute('post_comments', ['postId' => $comment->getPost()->getId()]);
+    }
+
+    // Signaler un commentaire
+    #[Route('/comment/{id}/report', name: 'comment_report')]
+    public function reportComment(Comment $comment, Request $request): Response
+    {
+        // Vérifier que l'utilisateur est connecté et approuvé
+        $user = $this->getUser();
+        if (!$user instanceof User || !$user->getIsAccepted()) {
+            $this->addFlash('error', 'Vous devez être connecté et approuvé pour signaler un commentaire.');
+            return $this->redirectToRoute('post_show', ['id' => $comment->getPost()->getId()]);
+        }
+
+        // Vérifier si l'utilisateur a déjà signalé ce commentaire
+        $existingReport = $this->commentReportRepository->findOneBy([
+            'comment' => $comment,
+            'reportedBy' => $user
+        ]);
+
+        if ($existingReport) {
+            $this->addFlash('warning', 'Vous avez déjà signalé ce commentaire.');
+            return $this->redirectToRoute('post_show', ['id' => $comment->getPost()->getId()]);
+        }
+
+        $report = new CommentReport();
+        $report->setComment($comment);
+        $report->setReportedBy($user);
+
+        $form = $this->createForm(CommentReportType::class, $report);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->entityManager->persist($report);
+            $this->entityManager->flush();
+
+            $this->addFlash('success', 'Votre signalement a été envoyé. Il sera examiné par les administrateurs.');
+            return $this->redirectToRoute('post_show', ['id' => $comment->getPost()->getId()]);
+        }
+
+        return $this->render('comment/report.html.twig', [
+            'form' => $form->createView(),
+            'comment' => $comment
+        ]);
     }
     
 }

@@ -1,0 +1,65 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Suggérer une Catégorie{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">
+                        <i class="bi bi-lightbulb me-2"></i>
+                        Suggérer une nouvelle catégorie
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted mb-4">
+                        Vous avez une idée de nouvelle catégorie pour enrichir notre blog ? 
+                        Partagez votre suggestion avec nous ! Elle sera examinée par nos administrateurs.
+                    </p>
+
+                    {{ form_start(form) }}
+                        <div class="mb-3">
+                            {{ form_label(form.name, null, {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                            {{ form_widget(form.name, {'attr': {'class': 'form-control'}}) }}
+                            {{ form_errors(form.name) }}
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form_label(form.description, null, {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                            {{ form_widget(form.description, {'attr': {'class': 'form-control'}}) }}
+                            {{ form_errors(form.description) }}
+                            <div class="form-text">Optionnel : décrivez le type de contenu que cette catégorie devrait contenir.</div>
+                        </div>
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a href="{{ path('category_list') }}" class="btn btn-secondary me-md-2">
+                                <i class="bi bi-arrow-left me-1"></i>
+                                Retour aux catégories
+                            </a>
+                            {{ form_widget(form.submit, {'attr': {'class': 'btn btn-primary'}}) }}
+                        </div>
+                    {{ form_end(form) }}
+                </div>
+            </div>
+
+            <!-- Informations supplémentaires -->
+            <div class="card mt-4">
+                <div class="card-body">
+                    <h6 class="card-title">
+                        <i class="bi bi-info-circle me-2"></i>
+                        À propos des suggestions
+                    </h6>
+                    <ul class="mb-0">
+                        <li>Votre suggestion sera examinée par nos administrateurs</li>
+                        <li>Si elle est approuvée, la catégorie sera créée et apparaîtra dans la liste</li>
+                        <li>Vous recevrez une notification du statut de votre suggestion</li>
+                        <li>Assurez-vous que la catégorie n'existe pas déjà</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

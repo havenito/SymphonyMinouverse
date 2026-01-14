@@ -4,62 +4,375 @@
 
 {% block stylesheets %}
     {{ parent() }}
-    <link rel="stylesheet" href="{{ asset('bootstrap/css/category-list.css') }}">
+    <style>
+        .modern-btn {
+            border-radius: 12px;
+            font-weight: 600;
+            padding: 0.875rem 2rem;
+            transition: all 0.3s ease;
+            border: none;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+        }
+        
+        .modern-btn-primary {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            color: white;
+        }
+        
+        .modern-btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(99, 102, 241, 0.4);
+            color: white;
+        }
+        
+        .modern-btn-secondary {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+        }
+        
+        .modern-btn-secondary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(245, 158, 11, 0.4);
+            color: white;
+        }
+        
+        .modern-category-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            transition: all 0.4s ease;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid rgba(99, 102, 241, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .modern-category-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, #6366f1 0%, #8b5cf6 50%, #22d3ee 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .modern-category-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 35px rgba(99, 102, 241, 0.2);
+        }
+        
+        .modern-category-card:hover::before {
+            opacity: 1;
+        }
+        
+        .category-icon-wrapper {
+            width: 70px;
+            height: 70px;
+            border-radius: 18px;
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.3);
+        }
+        
+        .category-icon-wrapper i {
+            font-size: 2rem;
+            color: white;
+        }
+        
+        .category-content {
+            flex-grow: 1;
+        }
+        
+        .category-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 0.75rem;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        
+        .category-description {
+            color: #64748b;
+            line-height: 1.6;
+            margin-bottom: 1.25rem;
+            font-size: 0.95rem;
+        }
+        
+        .category-stats {
+            margin-bottom: 1.5rem;
+            padding: 0.75rem 1rem;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border-radius: 12px;
+            border-left: 3px solid #6366f1;
+        }
+        
+        .stat-item {
+            color: #475569;
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+        }
+        
+        .stat-item i {
+            color: #6366f1;
+        }
+        
+        .category-actions {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: auto;
+        }
+        
+        .btn-category {
+            flex: 1;
+            padding: 0.75rem 1.25rem;
+            border-radius: 12px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+        
+        .btn-view {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            color: white;
+        }
+        
+        .btn-view:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.35);
+            color: white;
+        }
+        
+        .btn-delete {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+        }
+        
+        .btn-delete:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(239, 68, 68, 0.35);
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.6s ease forwards;
+            opacity: 0;
+        }
+        
+        .text-gradient-primary {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        /* Pagination Styles */
+        .pagination-modern {
+            display: flex;
+            gap: 0.5rem;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .page-item {
+            list-style: none;
+        }
+        
+        .page-link-modern {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 45px;
+            height: 45px;
+            padding: 0.5rem 1rem;
+            border-radius: 12px;
+            background: white;
+            color: #667eea;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: 2px solid #e5e7eb;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+        
+        .page-link-modern:hover {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: transparent;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+        
+        .page-item.active .page-link-modern {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: transparent;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .page-item.disabled .page-link-modern {
+            background: transparent;
+            border: none;
+            color: #9ca3af;
+            cursor: default;
+            box-shadow: none;
+        }
+        
+        .page-item.disabled .page-link-modern:hover {
+            transform: none;
+            box-shadow: none;
+        }
+    </style>
 {% endblock %}
 
-{% block title %}Liste des Catégories{% endblock %}
+{% block title %}{{ 'category.list.title'|trans }}{% endblock %}
 
 {% block body %}
 <div class="container mt-5">
 
     <!-- Header avec un peu de style -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="text-dark fw-bold">Liste des Catégories</h1>
-        {% if is_granted('ROLE_ADMIN') %}
-            <div>
-                <a href="{{ path('category_new') }}" class="btn btn-primary btn-lg shadow-lg hover-illuminate">
-                    Ajouter une catégorie
-                </a>
-            </div>
-        {% endif %}
+    <div class="text-center mb-5 scroll-reveal">
+        <h1 class="fw-bold text-gradient-primary" style="font-size: 3rem;">
+            <i class="bi bi-tags-fill me-3"></i>
+            {{ 'nav.categories'|trans }}
+        </h1>
+        <p class="lead text-muted">{{ 'home.categories.subtitle'|trans }}</p>
     </div>
-
-    <!-- Liste des catégories avec des animations et un design moderne -->
-    <div class="card shadow-sm rounded-3">
-        <div class="card-body">
-            {% if categories is not empty %}
-                <ul class="list-group">
-                    {% for category in categories %}
-                        <li class="list-group-item d-flex justify-content-between align-items-center border-0 rounded-3 mb-3 hover-card">
-                            <div class="text-dark fs-5">
-                                {{ category.name }}
-                            </div>
-                            <div>
-                                <!-- Bouton "Voir les détails" avec le style de hover -->
-                                <a href="{{ path('category_show', {id: category.id}) }}" class="btn btn-sm btn-outline-primary hover-zoom">
-                                    Voir les détails
-                                </a>
-
-                                {% if is_granted('ROLE_ADMIN') %}
-                                    <!-- Formulaire pour supprimer la catégorie avec le style de suppression -->
-                                    <form action="{{ path('category_delete', {id: category.id}) }}" method="post" style="display: inline;" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette catégorie ?');">
-                                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ category.id) }}">
-                                        <button type="submit" class="btn btn-sm btn-danger hover-illuminate">
-                                            Supprimer
-                                        </button>
-                                    </form>
-                                {% endif %}
-                            </div>
-                        </li>
-                    {% endfor %}
-                </ul>
-            {% else %}
-                <div class="alert alert-warning" role="alert">
-                    Aucune catégorie trouvée.
-                </div>
+    
+    <div class="d-flex justify-content-center mb-5 fade-in">
+        <div class="d-flex gap-3">
+            {% if app.user and 'ROLE_USER' in app.user.roles %}
+                <a href="{{ path('category_suggest') }}" class="modern-btn modern-btn-secondary">
+                    <i class="bi bi-lightbulb-fill me-2"></i>
+                    {{ 'category.list.suggest_category'|trans }}
+                </a>
+            {% endif %}
+            {% if is_granted('ROLE_ADMIN') %}
+                <a href="{{ path('category_new') }}" class="modern-btn modern-btn-primary">
+                    <i class="bi bi-plus-circle-fill me-2"></i>
+                    {{ 'category.list.create_category'|trans }}
+                </a>
             {% endif %}
         </div>
     </div>
+
+    <!-- Liste des catégories avec des animations et un design moderne -->
+    <div class="row g-4">
+        {% if categories is not empty %}
+            {% for category in categories %}
+                <div class="col-md-6 col-lg-4 fade-in" style="animation-delay: {{ loop.index * 0.1 }}s;">
+                    <div class="modern-category-card">
+                        <div class="category-icon-wrapper">
+                            <i class="bi bi-tag-fill"></i>
+                        </div>
+                        <div class="category-content">
+                            <h4 class="category-title">{{ category.getTranslatedName(app.request.locale) }}</h4>
+                            <p class="category-description">
+                                {{ category.getTranslatedDescription(app.request.locale) }}
+                            </p>
+                            <div class="category-stats">
+                                <span class="stat-item">
+                                    <i class="bi bi-file-text me-1"></i>
+                                    {{ category.posts|length }} {{ 'category.list.articles_count'|trans }}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="category-actions">
+                            <a href="{{ path('category_show', {id: category.id}) }}" class="btn-category btn-view">
+                                <i class="bi bi-eye-fill me-2"></i>{{ 'category.list.explore_category'|trans }}
+                            </a>
+                            {% if is_granted('ROLE_ADMIN') %}
+                                <form action="{{ path('category_delete', {id: category.id}) }}" method="post" class="m-0" onsubmit="return confirm('{{ 'button.delete'|trans }} ?');">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ category.id) }}">
+                                    <button type="submit" class="btn-category btn-delete">
+                                        <i class="bi bi-trash-fill me-2"></i>{{ 'button.delete'|trans }}
+                                    </button>
+                                </form>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="col-12">
+                <div class="alert alert-warning text-center py-5" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill fs-1 d-block mb-3"></i>
+                    <h4>{{ 'category.list.no_categories'|trans }}</h4>
+                    <p class="mb-0">{{ 'category.list.create_first'|trans }}</p>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+    
+    <!-- Pagination -->
+    {% if totalPages > 1 %}
+        <div class="pagination-container d-flex justify-content-center mt-5">
+            <nav aria-label="Pagination des catégories">
+                <ul class="pagination-modern">
+                    {% if currentPage > 1 %}
+                        <li class="page-item">
+                            <a href="{{ path('category_list', {page: currentPage - 1}) }}" class="page-link-modern" aria-label="Précédent">
+                                <i class="bi bi-chevron-left"></i>
+                            </a>
+                        </li>
+                    {% endif %}
+
+                    {% for i in 1..totalPages %}
+                        {% if i == currentPage %}
+                            <li class="page-item active">
+                                <span class="page-link-modern">{{ i }}</span>
+                            </li>
+                        {% elseif i == 1 or i == totalPages or (i >= currentPage - 1 and i <= currentPage + 1) %}
+                            <li class="page-item">
+                                <a href="{{ path('category_list', {page: i}) }}" class="page-link-modern">{{ i }}</a>
+                            </li>
+                        {% elseif i == currentPage - 2 or i == currentPage + 2 %}
+                            <li class="page-item disabled">
+                                <span class="page-link-modern">...</span>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if currentPage < totalPages %}
+                        <li class="page-item">
+                            <a href="{{ path('category_list', {page: currentPage + 1}) }}" class="page-link-modern" aria-label="Suivant">
+                                <i class="bi bi-chevron-right"></i>
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    {% endif %}
 </div>
 
 {% endblock %}

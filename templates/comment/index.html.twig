@@ -8,7 +8,16 @@
     <div>
         {% for comment in comments %}
             <div class="comment mb-3">
-                <p><strong>{{ comment.user.firstName }} {{ comment.user.lastName }}</strong> le {{ comment.createdAt|date('d/m/Y H:i') }}</p>
+                <p>
+                    <strong>
+                        {% if comment.user %}
+                            {{ comment.user.firstName }} {{ comment.user.lastName }}
+                        {% else %}
+                            <em>Utilisateur supprimé</em>
+                        {% endif %}
+                    </strong> 
+                    le {{ comment.createdAt|date('d/m/Y H:i') }}
+                </p>
                 <p>{{ comment.content }}</p>
                 
                 {% if comment.isAccepted %}

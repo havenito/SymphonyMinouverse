@@ -1,13 +1,13 @@
 body {
     font-family: 'Arial', sans-serif;
-    background-color: #f8f9fa;
+    /* Background handled by dark-mode.css */
     margin: 0;
     padding: 0;
 }
 
 h1 {
     font-size: 2.5rem;
-    color: #333;
+    /* Color handled by dark-mode.css */
     text-align: center;
     margin-bottom: 40px;
     animation: fadeInAnimation 1.5s ease-in-out;
@@ -31,7 +31,7 @@ h1 {
 }
 
 .card {
-    background-color: #fff;
+    /* Background and colors handled by dark-mode.css */
     border-radius: 8px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -56,13 +56,13 @@ h1 {
 
 .form-label {
     font-weight: bold;
-    color: #333;
+    /* Color handled by dark-mode.css */
 }
 
 .form-control {
     font-size: 1rem;
     padding: 0.75rem 1rem;
-    border: 1px solid #ced4da;
+    /* Border and background handled by dark-mode.css */
     border-radius: 0.375rem;
     box-shadow: none;
     width: 100%;
@@ -75,7 +75,7 @@ h1 {
 }
 
 .text-danger {
-    color: #e74a3b;
+    /* Color handled by dark-mode.css */
     font-size: 0.875rem;
 }
 
@@ -109,7 +109,7 @@ h1 {
 }
 
 .hover-illuminate:hover {
-    background-color: #ffffff;
+    /* Background handled by dark-mode.css */
     color: #6c63ff;
     transform: scale(1.05);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
