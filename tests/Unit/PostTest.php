@@ -5,15 +5,6 @@ namespace App\Tests\Unit;
 use App\Entity\Post;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Test unitaire basique pour l'entité Post
- * 
- * Ce test vérifie les fonctions de base de l'entité Post :
- * - Création d'un post
- * - Titre et contenu
- * - Date de publication
- * - Image
- */
 class PostTest extends TestCase
 {
     /**

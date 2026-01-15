@@ -5,19 +5,10 @@ namespace App\Tests\Unit;
 use App\Entity\User;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Test unitaire basique pour l'entité User
- * 
- * Ce test vérifie les fonctions de base de l'entité User :
- * - Création d'un utilisateur
- * - Getters et Setters (email, nom, prénom, mot de passe)
- * - Gestion des rôles
- * - Date de création automatique
- */
 class UserTest extends TestCase
 {
     /**
-     * Test 1 : Création d'un utilisateur
+     * Création d'un utilisateur
      * Vérifie qu'on peut créer un nouvel utilisateur
      */
     public function testCanCreateUser(): void
@@ -30,7 +21,7 @@ class UserTest extends TestCase
     }
 
     /**
-     * Test 2 : Setter et Getter pour l'email
+     * Setter et Getter pour l'email
      * Vérifie qu'on peut définir et récupérer un email
      */
     public function testEmailGetterAndSetter(): void
@@ -46,7 +37,7 @@ class UserTest extends TestCase
     }
 
     /**
-     * Test 3 : Setter et Getter pour le prénom et nom
+     * Setter et Getter pour le prénom et nom
      * Vérifie qu'on peut définir et récupérer le prénom et le nom
      */
     public function testNameGettersAndSetters(): void
@@ -63,7 +54,7 @@ class UserTest extends TestCase
     }
 
     /**
-     * Test 4 : Setter et Getter pour le mot de passe
+     * Setter et Getter pour le mot de passe
      * Vérifie qu'on peut définir et récupérer un mot de passe
      */
     public function testPasswordGetterAndSetter(): void
@@ -77,7 +68,7 @@ class UserTest extends TestCase
     }
 
     /**
-     * Test 5 : Gestion des rôles
+     * Gestion des rôles
      * Vérifie qu'on peut ajouter et récupérer des rôles
      */
     public function testRolesManagement(): void
@@ -98,7 +89,7 @@ class UserTest extends TestCase
     }
 
     /**
-     * Test 6 : Date de création automatique
+     * Date de création automatique
      * Vérifie que la date de création est définie automatiquement
      */
     public function testCreatedAtIsSetAutomatically(): void
@@ -116,7 +107,7 @@ class UserTest extends TestCase
     }
 
     /**
-     * Test 7 : Statut actif par défaut
+     * Statut actif par défaut
      * Vérifie qu'un utilisateur est actif par défaut
      */
     public function testUserIsActiveByDefault(): void
@@ -128,7 +119,7 @@ class UserTest extends TestCase
     }
 
     /**
-     * Test 8 : Modification du statut actif
+     * Modification du statut actif
      * Vérifie qu'on peut activer/désactiver un utilisateur
      */
     public function testCanChangeActiveStatus(): void
@@ -145,7 +136,7 @@ class UserTest extends TestCase
     }
 
     /**
-     * Test 9 : Photo de profil
+     * Photo de profil
      * Vérifie qu'on peut définir une photo de profil
      */
     public function testProfilePictureGetterAndSetter(): void
@@ -161,7 +152,7 @@ class UserTest extends TestCase
     }
 
     /**
-     * Test 10 : Chaînage des méthodes (Fluent Interface)
+     * Chaînage des méthodes (Fluent Interface)
      * Vérifie qu'on peut chaîner les setters
      */
     public function testFluentInterface(): void
@@ -186,7 +177,7 @@ class UserTest extends TestCase
     }
 
     /**
-     * Test 11 : Compteur d'avertissements par défaut
+     * Compteur d'avertissements par défaut
      * Vérifie que le compteur d'avertissements commence à 0
      */
     public function testWarningCountDefaultValue(): void
@@ -198,7 +189,7 @@ class UserTest extends TestCase
     }
 
     /**
-     * Test 12 : UserIdentifier (pour Symfony Security)
+     * UserIdentifier (pour Symfony Security)
      * Vérifie que getUserIdentifier retourne l'email
      */
     public function testUserIdentifier(): void
