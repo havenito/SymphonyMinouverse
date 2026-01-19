@@ -53,6 +53,9 @@ jobs:
       - name: Install Composer dependencies
         run: docker compose exec -T web composer install --no-progress --prefer-dist --optimize-autoloader
 
+      - name: Clear cache for test environment
+        run: docker compose exec -T web php bin/console cache:clear --env=test
+
       - name: Check the Symfony console
         run: |
           docker compose exec -T web php bin/console about
