@@ -20,7 +20,7 @@ jobs:
 
       - name: Create .env.test.local
         run: |
-          echo "DATABASE_URL=mysql://blog_user:blog_password@database:3306/blog_db?serverVersion=8.0" > .env.test.local
+          echo "DATABASE_URL=mysql://root:rootpass@database:3306/blog_db_test?serverVersion=8.0" > .env.test.local
           echo "APP_ENV=test" >> .env.test.local
           echo "APP_SECRET=\$ecretf0rt3st" >> .env.test.local
 
