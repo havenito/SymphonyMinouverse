@@ -23,12 +23,17 @@ jobs:
           echo "DATABASE_URL=mysql://root:rootpass@database:3306/blog_db_test?serverVersion=8.0" > .env.test.local
           echo "APP_ENV=test" >> .env.test.local
           echo "APP_SECRET=\$ecretf0rt3st" >> .env.test.local
+          cat .env.test.local
 
       - name: Start Docker Compose
         run: |
           docker compose up -d
           echo "Waiting for services to be ready..."
           sleep 15
+
+      - name: Grant root permissions on test database
+        run: |
+          docker compose exec -T database mysql -uroot -prootpass -e "GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' WITH GRANT OPTION; FLUSH PRIVILEGES;"
 
       - name: Check PHP Version
         run: docker compose exec -T web php -v
