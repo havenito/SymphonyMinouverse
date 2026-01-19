@@ -92,7 +92,9 @@ jobs:
     
     steps:
       - name: Checkout
-        uses: atart Docker Compose
+        uses: actions/checkout@v4
+
+      - name: Start Docker Compose
         run: |
           docker compose up -d web
           sleep 10
@@ -107,14 +109,10 @@ jobs:
 
       - name: Stop Docker Compose
         if: always()
-        run: docker compose down -vnstalled, skipping..."
-          fi
-        continue-on-error: true
+        run: docker compose down -v
 
   docker-build:
-    name: Docker Build Test
-    runs-on: ubuntu-latest
-    & Save Artifact
+    name: Docker Build & Save Artifact
     runs-on: ubuntu-latest
     
     steps:
