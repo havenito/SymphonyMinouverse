@@ -25,20 +25,20 @@ jobs:
           echo "APP_SECRET=\$ecretf0rt3st" >> .env.test.local
           cat .env.test.local
 
-      - name: Configure framework.test for functional tests
-        run: |
-          mkdir -p config/packages/test
-          echo "framework:" > config/packages/test/framework.yaml
-          echo "    test: true" >> config/packages/test/framework.yaml
-          echo "    session:" >> config/packages/test/framework.yaml
-          echo "        storage_factory_id: session.storage.factory.mock_file" >> config/packages/test/framework.yaml
-          cat config/packages/test/framework.yaml
-
       - name: Start Docker Compose
         run: |
           docker compose up -d
           echo "Waiting for services to be ready..."
           sleep 15
+
+      - name: Configure framework.test for functional tests
+        run: |
+          docker compose exec -T web mkdir -p config/packages/test
+          docker compose exec -T web bash -c 'echo "framework:" > config/packages/test/framework.yaml'
+          docker compose exec -T web bash -c 'echo "    test: true" >> config/packages/test/framework.yaml'
+          docker compose exec -T web bash -c 'echo "    session:" >> config/packages/test/framework.yaml'
+          docker compose exec -T web bash -c 'echo "        storage_factory_id: session.storage.factory.mock_file" >> config/packages/test/framework.yaml'
+          docker compose exec -T web cat config/packages/test/framework.yaml
 
       - name: Grant root permissions on test database
         run: |
