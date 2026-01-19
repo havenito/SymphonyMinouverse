@@ -25,6 +25,15 @@ jobs:
           echo "APP_SECRET=\$ecretf0rt3st" >> .env.test.local
           cat .env.test.local
 
+      - name: Configure framework.test for functional tests
+        run: |
+          mkdir -p config/packages/test
+          echo "framework:" > config/packages/test/framework.yaml
+          echo "    test: true" >> config/packages/test/framework.yaml
+          echo "    session:" >> config/packages/test/framework.yaml
+          echo "        storage_factory_id: session.storage.factory.mock_file" >> config/packages/test/framework.yaml
+          cat config/packages/test/framework.yaml
+
       - name: Start Docker Compose
         run: |
           docker compose up -d
@@ -44,12 +53,6 @@ jobs:
       - name: Install Composer dependencies
         run: docker compose exec -T web composer install --no-progress --prefer-dist --optimize-autoloader
 
-      - name: Clear cache for test environment
-        run: docker compose exec -T web php bin/console cache:clear --env=test
-
-      - name: Warmup cache for test environment  
-        run: docker compose exec -T web php bin/console cache:warmup --env=test
-
       - name: Check the Symfony console
         run: |
           docker compose exec -T web php bin/console about
@@ -61,10 +64,16 @@ jobs:
           docker compose exec -T -e DATABASE_URL="mysql://root:rootpass@database:3306/blog_db?serverVersion=8.0" web php bin/console doctrine:database:create --env=test
           docker compose exec -T -e DATABASE_URL="mysql://root:rootpass@database:3306/blog_db?serverVersion=8.0" web php bin/console doctrine:schema:update --env=test --force
 
+      - name: Run Unit Tests
+        run: docker compose exec -T -e DATABASE_URL="mysql://root:rootpass@database:3306/blog_db?serverVersion=8.0" web php bin/phpunit tests/Unit --coverage-text
+        continue-on-error: true
+      - name: Run Integration Tests
+        run: docker compose exec -T -e DATABASE_URL="mysql://root:rootpass@database:3306/blog_db?serverVersion=8.0" web php bin/phpunit tests/Integration --coverage-text
+        continue-on-error: true
       - name: Run All PHPUnit tests
         run: docker compose exec -T -e DATABASE_URL="mysql://root:rootpass@database:3306/blog_db?serverVersion=8.0" web php bin/phpunit --coverage-text
-        continue-on-error: false
-        
+
+
       - name: Check code syntax (Lint)
         run: |
           docker compose exec -T web php bin/console lint:twig templates
