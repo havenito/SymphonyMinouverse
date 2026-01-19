@@ -25,17 +25,6 @@ jobs:
           echo "APP_SECRET=\$ecretf0rt3st" >> .env.test.local
           cat .env.test.local
 
-      - name: Configure framework.test for functional tests
-        run: |
-          mkdir -p config/packages/test
-          cat > config/packages/test/framework.yaml << 'EOF'
-          framework:
-              test: true
-              session:
-                  storage_factory_id: session.storage.factory.mock_file
-          EOF
-          cat config/packages/test/framework.yaml
-
       - name: Start Docker Compose
         run: |
           docker compose up -d
@@ -57,12 +46,6 @@ jobs:
 
       - name: Clear cache for test environment
         run: docker compose exec -T web php bin/console cache:clear --env=test
-
-      - name: Verify framework.test configuration
-        run: |
-          docker compose exec -T web ls -la config/packages/test/
-          docker compose exec -T web cat config/packages/test/framework.yaml
-          docker compose exec -T web php bin/console debug:config framework test --env=test || echo "Debug config failed, continuing..."
 
       - name: Check the Symfony console
         run: |
