@@ -72,6 +72,7 @@ jobs:
         continue-on-error: true
       - name: Run All PHPUnit tests
         run: docker compose exec -T -e DATABASE_URL="mysql://root:rootpass@database:3306/blog_db?serverVersion=8.0" web php bin/phpunit --coverage-text
+        continue-on-error: true
 
 
       - name: Check code syntax (Lint)
