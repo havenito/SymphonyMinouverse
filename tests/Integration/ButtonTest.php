@@ -16,7 +16,10 @@ class ButtonTest extends WebTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->client = static::createClient();
+        $this->client = static::createClient([], [
+            'KERNEL_CLASS' => \App\Kernel::class,
+        ]);
+        $this->client->followRedirects();
     }
 
     /**
