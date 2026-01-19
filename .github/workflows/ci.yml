@@ -30,8 +30,6 @@ jobs:
           docker compose up -d
           echo "Waiting for services to be ready..."
           sleep 15
-        env:
-          DATABASE_URL: "mysql://root:rootpass@database:3306/blog_db_test?serverVersion=8.0"
 
       - name: Grant root permissions on test database
         run: |
@@ -53,16 +51,18 @@ jobs:
 
       - name: Run migrations
         run: |
-          docker compose exec -T web php bin/console doctrine:database:drop --env=test --force --if-exists
-          docker compose exec -T web php bin/console doctrine:database:create --env=test
-          docker compose exec -T web php bin/console doctrine:migrations:migrate --env=test --no-interaction || docker compose exec -T web php bin/console doctrine:schema:update --env=test --force
-        env:
-          DATABASE_URL: "mysql://root:rootpass@database:3306/blog_db_test?serverVersion=8.0"
+          docker compose exec -T -e DATABASE_URL="mysql://root:rootpass@database:3306/blog_db_test?serverVersion=8.0" web php bin/console doctrine:database:drop --env=test --force --if-exists
+          docker compose exec -T -e DATABASE_URL="mysql://root:rootpass@database:3306/blog_db_test?serverVersion=8.0" web php bin/console doctrine:database:create --env=test
+          docker compose exec -T -e DATABASE_URL="mysql://root:rootpass@database:3306/blog_db_test?serverVersion=8.0" web php bin/console doctrine:migrations:migrate --env=test --no-interaction
 
-      - name: Run PHPUnit tests
-        run: docker compose exec -T web php bin/phpunit --coverage-text
-        env:
-          DATABASE_URL: "mysql://root:rootpass@database:3306/blog_db_test?serverVersion=8.0"
+      - name: Run Unit Tests
+        run: docker compose exec -T -e DATABASE_URL="mysql://root:rootpass@database:3306/blog_db_test?serverVersion=8.0" web php bin/phpunit tests/Unit --coverage-text
+
+      - name: Run Integration Tests
+        run: docker compose exec -T -e DATABASE_URL="mysql://root:rootpass@database:3306/blog_db_test?serverVersion=8.0" web php bin/phpunit tests/Integration --coverage-text
+
+      - name: Run All PHPUnit tests
+        run: docker compose exec -T -e DATABASE_URL="mysql://root:rootpass@database:3306/blog_db_test?serverVersion=8.0" web php bin/phpunit --coverage-text
 
       - name: Check code syntax (Lint)
         run: |
