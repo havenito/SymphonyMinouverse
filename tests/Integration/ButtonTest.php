@@ -50,7 +50,7 @@ class ButtonTest extends WebTestCase
         // Vérifie la présence d'un bouton submit pour l'inscription
         $this->assertSelectorExists('button[type="submit"]');
         
-        // Vérifie le texte du bouton (ajustez selon votre template)
+        // Vérifie le texte du bouton
         $submitButtons = $crawler->filter('button[type="submit"]');
         $this->assertGreaterThan(0, count($submitButtons));
     }
