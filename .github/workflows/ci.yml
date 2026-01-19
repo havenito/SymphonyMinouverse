@@ -47,6 +47,9 @@ jobs:
       - name: Clear cache for test environment
         run: docker compose exec -T web php bin/console cache:clear --env=test
 
+      - name: Warmup cache for test environment  
+        run: docker compose exec -T web php bin/console cache:warmup --env=test
+
       - name: Check the Symfony console
         run: |
           docker compose exec -T web php bin/console about
