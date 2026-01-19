@@ -44,6 +44,9 @@ jobs:
       - name: Install Composer dependencies
         run: docker compose exec -T web composer install --no-progress --prefer-dist --optimize-autoloader
 
+      - name: Remove test cache completely
+        run: docker compose exec -T web rm -rf var/cache/test
+
       - name: Clear cache for test environment
         run: docker compose exec -T web php bin/console cache:clear --env=test
 
